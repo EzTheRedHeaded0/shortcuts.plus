@@ -1,0 +1,57 @@
+{
+  "featured": [
+    {
+      "title": "Spotify Shuffle",
+      "desc": "Shuffle your liked songs instantly.",
+      "link": "https://www.icloud.com/shortcuts/",
+      "badge": "New",
+      "icon": "music"
+    },
+    {
+      "title": "View Image",
+      "desc": "Open local or online images instantly.",
+      "link": "https://www.icloud.com/shortcuts/",
+      "badge": "Popular",
+      "icon": "image"
+    },
+    {
+      "title": "Quick Notes",
+      "desc": "Capture notes in seconds.",
+      "link": "https://www.icloud.com/shortcuts/",
+      "badge": "Fast",
+      "icon": "note"
+    }
+  ],
+  "productivity": [
+    {
+      "title": "Today's Meetings",
+      "desc": "Review your calendar agenda quickly.",
+      "link": "https://www.icloud.com/shortcuts/",
+      "badge": "New",
+      "icon": "calendar"
+    },
+    {
+      "title": "Reminders Reader",
+      "desc": "Have Siri read reminders aloud.",
+      "link": "https://www.icloud.com/shortcuts/",
+      "badge": "Useful",
+      "icon": "bell"
+    }
+  ],
+  "utilities": [
+    {
+      "title": "Speak Photo Text",
+      "desc": "Extract and speak text from photos.",
+      "link": "https://www.icloud.com/shortcuts/",
+      "badge": "AI",
+      "icon": "scan"
+    },
+    {
+      "title": "Quick Notes",
+      "desc": "Capture notes in seconds.",
+      "link": "https://www.icloud.com/shortcuts/",
+      "badge": "Fast",
+      "icon": "note"
+    }
+  ]
+}

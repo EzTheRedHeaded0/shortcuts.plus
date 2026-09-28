@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shortcuts+ — Custom Apple Shortcuts</title>
+  <meta name="description" content="Find and add custom Apple Shortcuts. Search, save, and install automations in one tap." />
+  <meta name="theme-color" content="#07070a" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <meta property="og:title" content="Shortcuts+" />
+  <meta property="og:description" content="Beautiful shortcuts. Effortless automation." />
+  <link rel="preload" href="./app.js" as="script" />
+  <link rel="preload" href="./shortcuts.json" as="fetch" crossorigin />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="nav-shell">
+    <div class="wrap nav">
+      <a class="logo" href="./">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M6 13l4 4 8-9"/></svg>
+        </span>
+        Shortcuts+
+      </a>
+      <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu">☰</button>
+      <nav class="nav-links" id="nav-links">
+        <a href="#featured">Featured</a>
+        <a href="#productivity">Productivity</a>
+        <a href="#utilities">Utilities</a>
+        <a href="#howto">How to add</a>
+        <button class="icon-btn" id="theme-btn" aria-label="Toggle theme"></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Custom gallery for the Shortcuts app</div>
+      <h1>Shortcuts+</h1>
+      <p>Beautiful shortcuts. Effortless automation. Search the library, save your favorites, and add them to your iPhone in one tap.</p>
+      <div class="search-row">
+        <label class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+          <input id="search" type="search" placeholder="Search shortcuts..." autocomplete="off" />
+          <span class="kbd">/</span>
+        </label>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <div class="chips" id="chips"></div>
+      <div class="meta" id="count">Loading…</div>
+    </div>
+
+    <div id="app">
+      <div class="empty">Loading shortcuts…</div>
+    </div>
+
+    <section class="howto" id="howto">
+      <h2>Add a shortcut on iPhone</h2>
+      <p>These are custom shortcuts. After you tap Get Shortcut, iOS may ask you to allow shortcuts from other people.</p>
+      <div class="steps">
+        <div class="step">
+          <b>1. Open Settings</b>
+          <span>Go to Shortcuts → Advanced and turn on Allow Untrusted Shortcuts if iOS asks for it.</span>
+        </div>
+        <div class="step">
+          <b>2. Tap Get Shortcut</b>
+          <span>That opens the official iCloud page. Review the actions, then tap Add Shortcut.</span>
+        </div>
+        <div class="step">
+          <b>3. Run it</b>
+          <span>Find it in the Shortcuts app. You can also pin it to your Home Screen or ask Siri to run it.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <div>Shortcuts+ · a personal gallery for Apple Shortcuts</div>
+    <div>Not affiliated with Apple. Shortcuts is a trademark of Apple Inc.</div>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
