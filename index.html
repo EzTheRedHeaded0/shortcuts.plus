@@ -1,109 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shortcuts+ — Custom Apple Shortcuts & Automation</title>
-  <meta name="description" content="Discover custom Apple Shortcuts for productivity, utilities, wellness, and more. Search, save, and add shortcuts to your iPhone." />
-  <meta name="keywords" content="Apple Shortcuts, iPhone shortcuts, custom shortcuts, Siri Shortcuts, iOS automation, Apple automation, productivity shortcuts, Shortcuts+" />
-  <meta name="author" content="Shortcuts+" />
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <meta name="theme-color" content="#07070a" />
-  <link rel="canonical" href="https://shortcuts.plus/" />
-  <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
-  <link rel="alternate icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://shortcuts.plus/" />
-  <meta property="og:site_name" content="Shortcuts+" />
-  <meta property="og:title" content="Shortcuts+ — Custom Apple Shortcuts & Automation" />
-  <meta property="og:description" content="Discover custom Apple Shortcuts for productivity, utilities, wellness, and more. Search, save, and add shortcuts to your iPhone." />
-  <meta property="og:locale" content="en_US" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Shortcuts+ — Custom Apple Shortcuts & Automation" />
-  <meta name="twitter:description" content="Discover custom Apple Shortcuts for productivity, utilities, wellness, and more." />
-  <meta name="application-name" content="Shortcuts+" />
-  <meta name="apple-mobile-web-app-title" content="Shortcuts+" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <link rel="preload" href="/assets/js/app.js" as="script" />
-  <link rel="preload" href="/data/shortcuts.json" as="fetch" crossorigin />
-  <link rel="stylesheet" href="/assets/css/styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shortcuts+ — Custom Apple Shortcuts & Automation</title>
+<meta name="description" content="Discover custom Apple Shortcuts for productivity, utilities, wellness, and more. Search, save, and add shortcuts to your iPhone.">
+<meta name="keywords" content="Apple Shortcuts, iPhone shortcuts, custom shortcuts, Siri Shortcuts, iOS automation, Apple automation, productivity shortcuts, Shortcuts+">
+<meta name="author" content="Shortcuts+">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="theme-color" content="#07070a">
+<link rel="canonical" href="https://shortcuts.plus/">
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body>
-  <header class="nav-shell">
-    <div class="wrap nav">
-      <a class="logo" href="/">
-        <span class="logo-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M6 13l4 4 8-9"/></svg>
-        </span>
-        Shortcuts+
-      </a>
+<header class="nav-shell">
+<div class="wrap nav">
+<a class="logo" href="/">
+<span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M6 13l4 4 8-9"/></svg></span>
+Shortcuts+
+</a>
+<button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+<nav class="nav-links" id="nav-links">
+<div class="section-picker" id="section-picker">
+<button class="section-picker-button" id="section-picker-button" type="button" aria-haspopup="listbox" aria-expanded="false">
+<span id="section-picker-label">Sections</span>
+<span class="section-picker-chevron" aria-hidden="true"></span>
+</button>
+<div class="section-picker-menu" id="section-picker-menu" role="listbox" aria-label="Sections"></div>
+</div>
+<a href="#howto">How to add</a>
+<button class="icon-btn" id="theme-btn" aria-label="Toggle theme"></button>
+</nav>
+</div>
+</header>
 
-      <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu">☰</button>
+<main class="wrap">
+<section class="hero">
+<div class="kicker">Custom gallery for the Shortcuts app</div>
+<h1>Shortcuts+</h1>
+<p>Beautiful shortcuts. Effortless automation. Search the library, save your favorites, and add them to your iPhone in one tap.</p>
+<div class="search-row">
+<label class="search">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+<input id="search" type="search" placeholder="Search shortcuts..." autocomplete="off">
+<span class="kbd">/</span>
+</label>
+</div>
+</section>
 
-      <nav class="nav-links" id="nav-links">
-        <div class="section-picker">
-          <select id="section-select" aria-label="Browse sections">
-            <option value="all">All Sections</option>
-          </select>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 9l5 5 5-5"/></svg>
-        </div>
+<div class="toolbar">
+<div></div>
+<div class="meta" id="count">Loading…</div>
+</div>
 
-        <a href="#howto">How to add</a>
-        <button class="icon-btn" id="theme-btn" aria-label="Toggle theme"></button>
-      </nav>
-    </div>
-  </header>
+<div id="app">
+<div class="empty">Loading shortcuts…</div>
+</div>
 
-  <main class="wrap">
-    <section class="hero">
-      <div class="kicker">Custom gallery for the Shortcuts app</div>
-      <h1>Shortcuts+</h1>
-      <p>Beautiful shortcuts. Effortless automation. Search the library, save your favorites, and add them to your iPhone in one tap.</p>
-      <div class="search-row">
-        <label class="search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
-          <input id="search" type="search" placeholder="Search shortcuts..." autocomplete="off" />
-          <span class="kbd">/</span>
-        </label>
-      </div>
-    </section>
+<section class="howto" id="howto">
+<h2>Add a shortcut on iPhone</h2>
+<p>These are custom shortcuts. After you tap Get Shortcut, iOS may ask you to allow shortcuts from other people.</p>
+<div class="steps">
+<div class="step"><b>1. Open Settings</b><span>Go to Shortcuts → Advanced and turn on Allow Untrusted Shortcuts if iOS asks for it.</span></div>
+<div class="step"><b>2. Tap Get Shortcut</b><span>That opens the official iCloud page. Review the actions, then tap Add Shortcut.</span></div>
+<div class="step"><b>3. Run it</b><span>Find it in the Shortcuts app. You can also pin it to your Home Screen or ask Siri to run it.</span></div>
+</div>
+</section>
+</main>
 
-    <div class="toolbar">
-      <div></div>
-      <div class="meta" id="count">Loading…</div>
-    </div>
+<footer class="wrap">
+<div>Shortcuts+ · a personal gallery for Apple Shortcuts</div>
+<div>Not affiliated with Apple. Shortcuts is a trademark of Apple Inc.</div>
+</footer>
 
-    <div id="app">
-      <div class="empty">Loading shortcuts…</div>
-    </div>
-
-    <section class="howto" id="howto">
-      <h2>Add a shortcut on iPhone</h2>
-      <p>These are custom shortcuts. After you tap Get Shortcut, iOS may ask you to allow shortcuts from other people.</p>
-      <div class="steps">
-        <div class="step">
-          <b>1. Open Settings</b>
-          <span>Go to Shortcuts → Advanced and turn on Allow Untrusted Shortcuts if iOS asks for it.</span>
-        </div>
-        <div class="step">
-          <b>2. Tap Get Shortcut</b>
-          <span>That opens the official iCloud page. Review the actions, then tap Add Shortcut.</span>
-        </div>
-        <div class="step">
-          <b>3. Run it</b>
-          <span>Find it in the Shortcuts app. You can also pin it to your Home Screen or ask Siri to run it.</span>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="wrap">
-    <div>Shortcuts+ · a personal gallery for Apple Shortcuts</div>
-    <div>Not affiliated with Apple. Shortcuts is a trademark of Apple Inc.</div>
-  </footer>
-
-  <div class="toast" id="toast" role="status"></div>
-  <script src="/assets/js/app.js"></script>
+<div class="toast" id="toast" role="status"></div>
+<script src="/assets/js/app.js"></script>
 </body>
 </html>
