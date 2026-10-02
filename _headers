@@ -2,14 +2,14 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
-/styles.css
+/assets/css/styles.css
   Cache-Control: public, max-age=3600
 
-/app.js
+/assets/js/app.js
   Cache-Control: public, max-age=3600
 
-/favicon.svg
+/assets/icons/favicon.svg
   Cache-Control: public, max-age=86400
 
-/shortcuts.json
+/data/shortcuts.json
   Cache-Control: public, max-age=120
