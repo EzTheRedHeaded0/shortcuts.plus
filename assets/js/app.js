@@ -1,4 +1,4 @@
-const DATA_URL = "/data/shortcuts.json";
+const DATA_URL = "./data/shortcuts.json";
 const FAV_KEY = "sp-favs";
 const THEME_KEY = "sp-theme";
 
@@ -92,10 +92,10 @@ function cardHTML(item) {
 
 function escapeHtml(s) {
   return String(s)
-    .replaceAll("&", "&")
-    .replaceAll("<", "<")
-    .replaceAll(">", ">")
-    .replaceAll('"', """);
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 }
 function escapeAttr(s) {
   return escapeHtml(s).replaceAll("'", "&#39;");
