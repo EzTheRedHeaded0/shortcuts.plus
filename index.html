@@ -1,104 +1,3351 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shortcuts+ — Custom Apple Shortcuts & Automation</title>
-  <meta name="description" content="Discover custom Apple Shortcuts for productivity, utilities, wellness, and more. Search, save, and add shortcuts to your iPhone." />
-  <meta name="keywords" content="Apple Shortcuts, iPhone shortcuts, custom shortcuts, Siri Shortcuts, iOS automation, Apple automation, productivity shortcuts, Shortcuts+" />
-  <meta name="author" content="Shortcuts+" />
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <meta name="theme-color" content="#07070a" />
-  <link rel="canonical" href="https://shortcuts.plus/" />
-  <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
-  <link rel="alternate icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://shortcuts.plus/" />
-  <meta property="og:site_name" content="Shortcuts+" />
-  <meta property="og:title" content="Shortcuts+ — Custom Apple Shortcuts & Automation" />
-  <meta property="og:description" content="Discover custom Apple Shortcuts for productivity, utilities, wellness, and more. Search, save, and add shortcuts to your iPhone." />
-  <meta property="og:locale" content="en_US" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Shortcuts+ — Custom Apple Shortcuts & Automation" />
-  <meta name="twitter:description" content="Discover custom Apple Shortcuts for productivity, utilities, wellness, and more." />
-  <meta name="application-name" content="Shortcuts+" />
-  <meta name="apple-mobile-web-app-title" content="Shortcuts+" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <link rel="preload" href="/assets/js/app.js" as="script" />
-  <link rel="preload" href="/data/shortcuts.json" as="fetch" crossorigin />
-  <link rel="stylesheet" href="/assets/css/styles.css" />
+    <meta charset="utf-8">
+    <title>Object Manager</title>
+    <style>
+        html, body {
+            margin: 0;
+            background: #efeff4;
+            color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        .app {
+            width: 640px;
+            margin: 24px auto;
+            background: #f9f9f9;
+            border: 1px solid #c8c7cc;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .nav {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            border-bottom: 1px solid #c8c7cc;
+        }
+        .nav h1 { margin: 0; font-size: 17px; font-weight: 600; }
+        .nav span { color: #8e8e93; font-size: 12px; }
+        .slide { display: none; padding: 16px 20px 8px; }
+        .slide.on { display: block; }
+        .slide p { margin: 8px 0 12px; color: #8e8e93; font-size: 15px; }
+        canvas {
+            display: block;
+            width: 600px;
+            height: 280px;
+            background: transparent;
+        }
+        .actions { display: flex; gap: 8px; padding: 12px 0 4px; }
+        button {
+            border: 0;
+            background: transparent;
+            color: #007aff;
+            font: inherit;
+            font-size: 17px;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        button:disabled { color: rgba(0, 122, 255, 0.35); }
+        .actions button { background: #007aff; color: #fff; font-size: 15px; }
+        .bar {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            border-top: 1px solid #c8c7cc;
+        }
+        .dots { display: flex; gap: 8px; }
+        .dots button {
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            border-radius: 50%;
+            background: #c7c7cc;
+        }
+        .dots button.on { background: #007aff; }
+    </style>
 </head>
 <body>
-  <header class="nav-shell">
-    <div class="wrap nav">
-      <a class="logo" href="/">
-        <span class="logo-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M6 13l4 4 8-9"/></svg>
-        </span>
-        Shortcuts+
-      </a>
-      <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu">☰</button>
-      <nav class="nav-links" id="nav-links">
-        <a href="#featured">Featured</a>
-        <a href="#productivity">Productivity</a>
-        <a href="#utilities">Utilities</a>
-        <a href="#wellness">Wellness</a>
-        <a href="#howto">How to add</a>
-        <button class="icon-btn" id="theme-btn" aria-label="Toggle theme"></button>
-      </nav>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <section class="hero">
-      <div class="kicker">Custom gallery for the Shortcuts app</div>
-      <h1>Shortcuts+</h1>
-      <p>Beautiful shortcuts. Effortless automation. Search the library, save your favorites, and add them to your iPhone in one tap.</p>
-      <div class="search-row">
-        <label class="search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
-          <input id="search" type="search" placeholder="Search shortcuts..." autocomplete="off" />
-          <span class="kbd">/</span>
-        </label>
-      </div>
-    </section>
-
-    <div class="toolbar">
-      <div class="chips" id="chips"></div>
-      <div class="meta" id="count">Loading…</div>
-    </div>
-
-    <div id="app">
-      <div class="empty">Loading shortcuts…</div>
-    </div>
-
-    <section class="howto" id="howto">
-      <h2>Add a shortcut on iPhone</h2>
-      <p>These are custom shortcuts. After you tap Get Shortcut, iOS may ask you to allow shortcuts from other people.</p>
-      <div class="steps">
-        <div class="step">
-          <b>1. Open Settings</b>
-          <span>Go to Shortcuts → Advanced and turn on Allow Untrusted Shortcuts if iOS asks for it.</span>
+    <div class="app">
+        <div class="nav">
+            <span>Object Manager</span>
+            <h1 id="title">Text</h1>
+            <span id="count">1 of 8</span>
         </div>
-        <div class="step">
-          <b>2. Tap Get Shortcut</b>
-          <span>That opens the official iCloud page. Review the actions, then tap Add Shortcut.</span>
-        </div>
-        <div class="step">
-          <b>3. Run it</b>
-          <span>Find it in the Shortcuts app. You can also pin it to your Home Screen or ask Siri to run it.</span>
-        </div>
-      </div>
-    </section>
-  </main>
 
-  <footer class="wrap">
-    <div>Shortcuts+ · a personal gallery for Apple Shortcuts</div>
-    <div>Not affiliated with Apple. Shortcuts is a trademark of Apple Inc.</div>
-  </footer>
+        <section class="slide on" data-title="Text">
+            <p>Text objects keep their own size and color.</p>
+            <canvas id="c-text" width="600" height="280"></canvas>
+        </section>
+        <section class="slide" data-title="Shapes">
+            <p>Rect, ellipse, and line are the same kind of element.</p>
+            <canvas id="c-shapes" width="600" height="280"></canvas>
+        </section>
+        <section class="slide" data-title="Image">
+            <p>Images are elements, just like shapes.</p>
+            <canvas id="c-image" width="600" height="280"></canvas>
+        </section>
+        <section class="slide" data-title="Parenting">
+            <p>The label is a child, so it moves with the card.</p>
+            <canvas id="c-parent" width="600" height="280"></canvas>
+            <div class="actions"><button id="nudge" type="button">Nudge parent</button></div>
+        </section>
+        <section class="slide" data-title="Z-Index">
+            <p>Higher zIndex draws on top.</p>
+            <canvas id="c-z" width="600" height="280"></canvas>
+            <div class="actions"><button id="raise" type="button">Raise red</button></div>
+        </section>
+        <section class="slide" data-title="Motion">
+            <p>Play runs one tween. The page does not advance.</p>
+            <canvas id="c-motion" width="600" height="280"></canvas>
+            <div class="actions"><button id="play" type="button">Play</button></div>
+        </section>
+        <section class="slide" data-title="Style">
+            <p>Gradient, shadow, and opacity are properties.</p>
+            <canvas id="c-style" width="600" height="280"></canvas>
+        </section>
+        <section class="slide" data-title="Events">
+            <p>These actions stay on this slide.</p>
+            <canvas id="c-events" width="600" height="280"></canvas>
+            <div class="actions">
+                <button id="toggle" type="button">Switch</button>
+                <button id="duplicate" type="button">Duplicate</button>
+            </div>
+        </section>
 
-  <div class="toast" id="toast" role="status"></div>
-  <script src="/assets/js/app.js"></script>
+        <div class="bar">
+            <button id="back" type="button">Back</button>
+            <div class="dots" id="dots"></div>
+            <button id="next" type="button">Next</button>
+        </div>
+    </div>
+
+    <script type="text/plain" id="object-manager">
+var elements={background:color(255,255,255)};
+var vObjs=["text","rect","ellipse","image","group","line"];
+var vActs={text:["text","x","y","width","height","fillColor","zIndex"],rect:["x","y","width","height","radius","fillColor","zIndex"],ellipse:["x","y","width","height","fillColor","zIndex"],image:["img","x","y","width","height","zIndex"],group:["x","y","width","height","zIndex"],line:["x","y","x2","y2","strokeColor","strokeWeight","zIndex"]};
+
+var elementNames=[];
+var rootNames=[];
+var rootsDirty=true;
+var animations=[];
+var animationQueues={};
+var selectedObject=null;
+var focusedObject=null;
+var hoverObject=null;
+var downObject=null;
+var dragObject=null;
+var lastClickObject=null;
+var lastClickTime=0;
+var autoRedraw=false;
+var updateDepth=0;
+var dirty=true;
+var cullingEnabled=true;
+var cullingMargin=32;
+var dirtyRects=[];
+var dirtyRectsEnabled=true;
+var renderCacheEnabled=true;
+var renderStats={objects:0,drawCalls:0,culled:0,cached:0};
+var currentBlend="BLEND";
+var customEasing={};
+var easingFunctions={};
+var animationRunning=false;
+var PI2=6.283185307179586;
+
+// Core
+function clampValue(v,a,b){return v<a?a:v>b?b:v;}
+
+function randomName(length){
+    var chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var name="";
+    var i;
+    while(true){
+        name="";
+        for(i=0;i<length;i++){
+            name+=chars.charAt(floor(random(chars.length)));
+        }
+        if(elements[name]===undefined){
+            return name;
+        }
+    }
+}
+
+function objectKeys(){
+    return elementNames.slice(0);
+}
+
+function getElementNameByIndex(index){
+    if(index<0||index>=elementNames.length){
+        return;
+    }
+    return elementNames[index];
+}
+
+function getElementByIndex(index){
+    var name=getElementNameByIndex(index);
+    if(name===undefined){
+        return;
+    }
+    return elements[name];
+}
+
+function getElementIndexByName(name){
+    var i;
+    for(i=0;i<elementNames.length;i++){
+        if(elementNames[i]===name){
+            return i;
+        }
+    }
+    return -1;
+}
+
+function resolveKey(id){
+    if(typeof id==="object"&&id!==null){
+        if(id.name!==undefined){
+            id=id.name;
+        }else if(id.index!==undefined){
+            id=id.index;
+        }
+    }
+    if(typeof id==="number"){
+        return getElementNameByIndex(id);
+    }
+    if(typeof id==="string"&&id!=="background"&&elements[id]!==undefined&&elements[id].type!==undefined){
+        return id;
+    }
+}
+
+function getObject(id){
+    var name=resolveKey(id);
+    if(name===undefined){
+        return;
+    }
+    return elements[name];
+}
+
+function markDirty(){
+    dirty=true;
+    if(autoRedraw&&updateDepth===0){
+        redraw();
+    }
+}
+
+function beginUpdate(){
+    updateDepth++;
+}
+
+function endUpdate(){
+    if(updateDepth>0){
+        updateDepth--;
+    }
+    if(updateDepth===0&&dirty&&autoRedraw){
+        redraw();
+    }
+}
+
+function setAutoRedraw(value){
+    autoRedraw=value!==false;
+    return autoRedraw;
+}
+
+function isDirty(){
+    return dirty;
+}
+
+function clearDirty(){
+    dirty=false;
+}
+
+function requestRedraw(){
+    dirty=true;
+    redraw();
+}
+
+// Easing
+function easeLinear(t){
+    return t;
+}
+
+function easeInQuad(t){
+    return t*t;
+}
+
+function easeOutQuad(t){
+    return t*(2-t);
+}
+
+function easeInOutQuad(t){
+    if(t<0.5){
+        return 2*t*t;
+    }
+    return -1+(4-2*t)*t;
+}
+
+function easeInCubic(t){
+    return t*t*t;
+}
+
+function easeOutCubic(t){
+    t--;
+    return t*t*t+1;
+}
+
+function easeInOutCubic(t){
+    if(t<0.5){
+        return 4*t*t*t;
+    }
+    return 1-pow(-2*t+2,3)/2;
+}
+
+function easeInQuart(t){
+    return t*t*t*t;
+}
+
+function easeOutQuart(t){
+    t--;
+    return 1-t*t*t*t;
+}
+
+function easeInOutQuart(t){
+    if(t<0.5){
+        return 8*t*t*t*t;
+    }
+    return 1-pow(-2*t+2,4)/2;
+}
+
+function easeInQuint(t){
+    return t*t*t*t*t;
+}
+
+function easeOutQuint(t){
+    t--;
+    return 1+t*t*t*t*t;
+}
+
+function easeInOutQuint(t){
+    if(t<0.5){
+        return 16*t*t*t*t*t;
+    }
+    return 1-pow(-2*t+2,5)/2;
+}
+
+function easeInSine(t){
+    return 1-cos(t*PI/2);
+}
+
+function easeOutSine(t){
+    return sin(t*PI/2);
+}
+
+function easeInOutSine(t){
+    return-(cos(PI*t)-1)/2;
+}
+
+function easeInExpo(t){
+    if(t===0){
+        return 0;
+    }
+    return pow(2,10*t-10);
+}
+
+function easeOutExpo(t){
+    if(t===1){
+        return 1;
+    }
+    return 1-pow(2,-10*t);
+}
+
+function easeInOutExpo(t){
+    if(t===0||t===1){
+        return t;
+    }
+    if(t<0.5){
+        return pow(2,20*t-10)/2;
+    }
+    return(2-pow(2,-20*t+10))/2;
+}
+
+function easeInCirc(t){
+    return 1-sqrt(1-t*t);
+}
+
+function easeOutCirc(t){
+    return sqrt(1-pow(t-1,2));
+}
+
+function easeInOutCirc(t){
+    if(t<0.5){
+        return(1-sqrt(1-4*t*t))/2;
+    }
+    return(sqrt(1-pow(-2*t+2,2))+1)/2;
+}
+
+function easeInBack(t){
+    var c=1.70158;
+    return(c+1)*t*t*t-c*t*t;
+}
+
+function easeOutBack(t){
+    var c=1.70158;
+    return 1+(c+1)*pow(t-1,3)+c*pow(t-1,2);
+}
+
+function easeInOutBack(t){
+    var c=2.5949;
+    if(t<0.5){
+        return pow(2*t,2)*((c+1)*2*t-c)/2;
+    }
+    return(pow(2*t-2,2)*((c+1)*(2*t-2)+c)+2)/2;
+}
+
+function easeOutBounce(t){
+    var n=7.5625;
+    var d=2.75;
+    if(t<1/d){
+        return n*t*t;
+    }
+    if(t<2/d){
+        t-=1.5/d;
+        return n*t*t+0.75;
+    }
+    if(t<2.5/d){
+        t-=2.25/d;
+        return n*t*t+0.9375;
+    }
+    t-=2.625/d;
+    return n*t*t+0.984375;
+}
+
+function easeInBounce(t){
+    return 1-easeOutBounce(1-t);
+}
+
+function easeInOutBounce(t){
+    if(t<0.5){
+        return(1-easeInBounce(t*2))/2;
+    }
+    return(1+easeOutBounce(t*2-1))/2;
+}
+
+function initEase(){
+    easingFunctions.linear=easeLinear;
+    easingFunctions.easeInQuad=easeInQuad;
+    easingFunctions.easeOutQuad=easeOutQuad;
+    easingFunctions.easeInOutQuad=easeInOutQuad;
+    easingFunctions.easeInCubic=easeInCubic;
+    easingFunctions.easeOutCubic=easeOutCubic;
+    easingFunctions.easeInOutCubic=easeInOutCubic;
+    easingFunctions.easeInQuart=easeInQuart;
+    easingFunctions.easeOutQuart=easeOutQuart;
+    easingFunctions.easeInOutQuart=easeInOutQuart;
+    easingFunctions.easeInQuint=easeInQuint;
+    easingFunctions.easeOutQuint=easeOutQuint;
+    easingFunctions.easeInOutQuint=easeInOutQuint;
+    easingFunctions.easeInSine=easeInSine;
+    easingFunctions.easeOutSine=easeOutSine;
+    easingFunctions.easeInOutSine=easeInOutSine;
+    easingFunctions.easeInExpo=easeInExpo;
+    easingFunctions.easeOutExpo=easeOutExpo;
+    easingFunctions.easeInOutExpo=easeInOutExpo;
+    easingFunctions.easeInCirc=easeInCirc;
+    easingFunctions.easeOutCirc=easeOutCirc;
+    easingFunctions.easeInOutCirc=easeInOutCirc;
+    easingFunctions.easeInBack=easeInBack;
+    easingFunctions.easeOutBack=easeOutBack;
+    easingFunctions.easeInOutBack=easeInOutBack;
+    easingFunctions.easeOutBounce=easeOutBounce;
+    easingFunctions.easeInBounce=easeInBounce;
+    easingFunctions.easeInOutBounce=easeInOutBounce;
+}
+
+function getEasing(name){
+    if(typeof name==="function"){
+        return name;
+    }
+    if(customEasing[name]){
+        return customEasing[name];
+    }
+    return easingFunctions[name]||easeInOutCubic;
+}
+
+function registerEasing(name,fn){
+    if(typeof name!=="string"||typeof fn!=="function"){
+        return;
+    }
+    customEasing[name]=fn;
+    return fn;
+}
+
+// Objects
+function createObject(type,data){
+    var blueprint=vActs[type];
+    var defaults;
+    var obj;
+    var i;
+    var p;
+    var name;
+
+    if(!blueprint){
+        return;
+    }
+
+    if(!data||typeof data!=="object"){
+        data={};
+    }
+
+    if(type==="text"){
+        defaults=["",width/2,height/2,100,20,color(0),1];
+    }else if(type==="rect"){
+        defaults=[width/2,height/2,100,50,0,color(0),1];
+    }else if(type==="ellipse"){
+        defaults=[width/2,height/2,50,50,color(0),1];
+    }else if(type==="image"){
+        defaults=[null,width/2,height/2,100,100,1];
+    }else if(type==="group"){
+        defaults=[width/2,height/2,0,0,1];
+    }else if(type==="line"){
+        defaults=[0,0,100,100,color(0),1,1];
+    }else{
+        return;
+    }
+
+    obj={
+        type:type,
+        parent:null,
+        children:[],
+        properties:{
+            visible:true,
+            locked:false,
+            rotation:0,
+            scaleX:1,
+            scaleY:1,
+            opacity:1,
+            pivotX:0,
+            pivotY:0,
+            anchorX:0,
+            anchorY:0,
+            blendMode:"BLEND",
+            tags:[],
+            metadata:{},
+            comment:"",
+            cull:true,
+            cache:false
+        },
+        sortedChildren:[],
+        childrenDirty:true,
+        events:{},
+        cacheImage:null,
+        cacheW:0,
+        cacheH:0
+    };
+
+    for(i=0;i<blueprint.length;i++){
+        obj.properties[blueprint[i]]=data[blueprint[i]]===undefined?defaults[i]:data[blueprint[i]];
+    }
+
+    for(p in data){
+        if(data.hasOwnProperty(p)&&p!=="name"&&p!=="type"&&p!=="parent"&&p!=="children"&&obj.properties[p]===undefined){
+            obj.properties[p]=data[p];
+        }
+    }
+
+    name=data.name;
+
+    if(typeof name!=="string"||name===""||name==="background"||elements[name]!==undefined){
+        name=randomName(12);
+    }
+
+    elements[name]=obj;
+    elementNames.push(name);
+    rootsDirty=true;
+    markDirty();
+
+    return obj;
+}
+
+function createGroup(data){
+    return createObject("group",data);
+}
+
+function modifyObject(id,data){
+    var name=resolveKey(id);
+    var obj=elements[name];
+    var newName;
+    var p;
+    var i;
+    var children;
+
+    if(!obj||!obj.properties||!data||typeof data!=="object"){
+        return;
+    }
+
+    if(obj.properties.locked&&data.force!==true){
+        return obj;
+    }
+
+    markObjectDirty(name);
+
+    newName=data.name;
+
+    if(newName!==undefined&&newName!==name&&newName!=="background"&&elements[newName]===undefined){
+        elements[newName]=obj;
+        delete elements[name];
+
+        for(i=0;i<elementNames.length;i++){
+            if(elementNames[i]===name){
+                elementNames[i]=newName;
+                break;
+            }
+        }
+
+        if(obj.parent&&elements[obj.parent]){
+            children=elements[obj.parent].children;
+
+            for(i=0;i<children.length;i++){
+                if(children[i]===name){
+                    children[i]=newName;
+                }
+            }
+
+            elements[obj.parent].childrenDirty=true;
+        }else{
+            rootsDirty=true;
+        }
+
+        for(i=0;i<obj.children.length;i++){
+            if(elements[obj.children[i]]){
+                elements[obj.children[i]].parent=newName;
+            }
+        }
+
+        name=newName;
+    }
+
+    for(p in data){
+        if(data.hasOwnProperty(p)&&p!=="name"&&p!=="type"&&p!=="parent"&&p!=="children"&&p!=="force"){
+            obj.properties[p]=data[p];
+        }
+    }
+
+    obj.properties.opacity=clampValue(
+        obj.properties.opacity===undefined?1:obj.properties.opacity,
+        0,
+        1
+    );
+
+    obj.cacheImage=null;
+    markDirty();
+
+    return obj;
+}
+
+function setProperty(id,name,value){
+    var data={};
+    data[name]=value;
+    return modifyObject(id,data);
+}
+
+function getProperty(id,name){
+    var obj=getObject(id);
+
+    if(!obj){
+        return;
+    }
+
+    return obj.properties[name];
+}
+
+function renameObject(id,name){
+    if(typeof name!=="string"||name===""){
+        return;
+    }
+
+    return modifyObject(id,{name:name});
+}
+
+function modifyElementByIndex(index,data){
+    return modifyObject(index,data);
+}
+
+function renameElementByIndex(index,name){
+    return renameObject(index,name);
+}
+
+// Transform
+function setPosition(id,x,y){
+    return modifyObject(id,{x:x,y:y});
+}
+
+function setScale(id,x,y){
+    if(y===undefined){
+        y=x;
+    }
+
+    return modifyObject(id,{scaleX:x,scaleY:y});
+}
+
+function setRotation(id,rotation){
+    return modifyObject(id,{rotation:rotation});
+}
+
+function setOpacity(id,opacity){
+    return modifyObject(id,{opacity:clampValue(opacity,0,1)});
+}
+
+function setPivot(id,x,y){
+    return modifyObject(id,{pivotX:x,pivotY:y});
+}
+
+function setAnchor(id,x,y){
+    return modifyObject(id,{anchorX:clampValue(x,0,1),anchorY:clampValue(y,0,1)});
+}
+
+function setSize(id,w,h){
+    return modifyObject(id,{width:w,height:h});
+}
+
+// Parenting
+function removeChildName(parentName,childName){
+    var parent=elements[parentName];
+    var i;
+
+    if(!parent){
+        return;
+    }
+
+    for(i=parent.children.length-1;i>=0;i--){
+        if(parent.children[i]===childName){
+            parent.children.splice(i,1);
+        }
+    }
+
+    parent.childrenDirty=true;
+}
+
+function wouldCreateCycle(childName,parentName){
+    var name=parentName;
+
+    while(name&&elements[name]){
+        if(name===childName){
+            return true;
+        }
+
+        name=elements[name].parent;
+    }
+
+    return false;
+}
+
+function parentElement(child,parentId){
+    var childName=resolveKey(child);
+    var parentName=resolveKey(parentId);
+    var childObj;
+    var parentObj;
+    var i;
+
+    if(
+        childName===undefined||
+        parentName===undefined||
+        childName===parentName||
+        wouldCreateCycle(childName,parentName)
+    ){
+        return;
+    }
+
+    childObj=elements[childName];
+    parentObj=elements[parentName];
+
+    if(!childObj||!parentObj){
+        return;
+    }
+
+    if(childObj.parent&&childObj.parent!==parentName){
+        removeChildName(childObj.parent,childName);
+    }
+
+    childObj.parent=parentName;
+    childObj.properties.x=0;
+    childObj.properties.y=0;
+
+    for(i=0;i<parentObj.children.length;i++){
+        if(parentObj.children[i]===childName){
+            return childObj;
+        }
+    }
+
+    parentObj.children.push(childName);
+    parentObj.childrenDirty=true;
+    rootsDirty=true;
+    markDirty();
+
+    return childObj;
+}
+
+function addChild(parentId,childId){
+    return parentElement(childId,parentId);
+}
+
+function getAbsolutePosition(id){
+    var obj=getObject(id);
+    var x;
+    var y;
+
+    if(!obj){
+        return{x:0,y:0};
+    }
+
+    x=obj.properties.x||0;
+    y=obj.properties.y||0;
+
+    while(obj.parent&&elements[obj.parent]){
+        obj=elements[obj.parent];
+        x+=obj.properties.x||0;
+        y+=obj.properties.y||0;
+    }
+
+    return{x:x,y:y};
+}
+
+function unparentElement(child,parentId){
+    var childName=resolveKey(child);
+    var parentName=resolveKey(parentId);
+    var obj;
+    var pos;
+
+    if(childName===undefined||parentName===undefined){
+        return;
+    }
+
+    obj=elements[childName];
+
+    if(!obj||obj.parent!==parentName){
+        return obj;
+    }
+
+    pos=getAbsolutePosition(childName);
+
+    obj.properties.x=pos.x;
+    obj.properties.y=pos.y;
+    obj.parent=null;
+
+    removeChildName(parentName,childName);
+
+    rootsDirty=true;
+    markDirty();
+
+    return obj;
+}
+
+function getChildren(id){
+    var obj=getObject(id);
+
+    if(!obj){
+        return[];
+    }
+
+    return obj.children.slice(0);
+}
+
+function getParent(id){
+    var obj=getObject(id);
+
+    if(!obj){
+        return null;
+    }
+
+    return obj.parent;
+}
+
+// Visibility / metadata
+function setLocked(id,value){
+    return modifyObject(id,{force:true,locked:value===true});
+}
+
+function isLocked(id){
+    var obj=getObject(id);
+    return!!(obj&&obj.properties.locked);
+}
+
+function hideElement(id){
+    return modifyObject(id,{visible:false});
+}
+
+function showElement(id){
+    return modifyObject(id,{visible:true});
+}
+
+function setVisible(id,value){
+    return modifyObject(id,{visible:value!==false});
+}
+
+function isVisible(id){
+    var obj=getObject(id);
+    return!!(obj&&obj.properties.visible!==false);
+}
+
+function addTag(id,tag){
+    var obj=getObject(id);
+    var i;
+
+    if(!obj||typeof tag!=="string"||tag===""){
+        return;
+    }
+
+    if(!obj.properties.tags){
+        obj.properties.tags=[];
+    }
+
+    for(i=0;i<obj.properties.tags.length;i++){
+        if(obj.properties.tags[i]===tag){
+            return obj;
+        }
+    }
+
+    obj.properties.tags.push(tag);
+
+    return obj;
+}
+
+function removeTag(id,tag){
+    var obj=getObject(id);
+    var i;
+
+    if(!obj||!obj.properties.tags){
+        return;
+    }
+
+    for(i=obj.properties.tags.length-1;i>=0;i--){
+        if(obj.properties.tags[i]===tag){
+            obj.properties.tags.splice(i,1);
+        }
+    }
+
+    return obj;
+}
+
+function hasTag(id,tag){
+    var obj=getObject(id);
+    var i;
+
+    if(!obj||!obj.properties.tags){
+        return false;
+    }
+
+    for(i=0;i<obj.properties.tags.length;i++){
+        if(obj.properties.tags[i]===tag){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function getObjectsByTag(tag){
+    var out=[];
+    var i;
+
+    for(i=0;i<elementNames.length;i++){
+        if(hasTag(elementNames[i],tag)){
+            out.push(elementNames[i]);
+        }
+    }
+
+    return out;
+}
+
+function setMetadata(id,name,value){
+    var obj=getObject(id);
+
+    if(!obj){
+        return;
+    }
+
+    if(!obj.properties.metadata){
+        obj.properties.metadata={};
+    }
+
+    obj.properties.metadata[name]=value;
+
+    return obj;
+}
+
+function getMetadata(id,name){
+    var obj=getObject(id);
+
+    if(!obj||!obj.properties.metadata){
+        return;
+    }
+
+    return obj.properties.metadata[name];
+}
+
+function setComment(id,textValue){
+    return modifyObject(
+        id,
+        {comment:""+(textValue===undefined?"":textValue)}
+    );
+}
+
+function getComment(id){
+    var obj=getObject(id);
+
+    if(!obj){
+        return"";
+    }
+
+    return obj.properties.comment||"";
+}
+
+// Constraints
+function constraintValue(value,total){
+    if(
+        typeof value==="string"&&
+        value.charAt(value.length-1)==="%"
+    ){
+        return total*parseFloat(value)/100;
+    }
+
+    return value;
+}
+
+function setConstraints(id,constraints){
+    return modifyObject(id,{constraints:constraints});
+}
+
+function applyConstraints(obj){
+    var p=obj.properties;
+    var c=p.constraints;
+    var parent;
+    var pp;
+
+    if(!c||!obj.parent){
+        return;
+    }
+
+    parent=elements[obj.parent];
+
+    if(!parent){
+        return;
+    }
+
+    pp=parent.properties;
+
+    if(c.left!==undefined){
+        p.x=constraintValue(c.left,pp.width||width);
+    }
+
+    if(c.right!==undefined){
+        p.x=(pp.width||width)-p.width-constraintValue(c.right,pp.width||width);
+    }
+
+    if(c.top!==undefined){
+        p.y=constraintValue(c.top,pp.height||height);
+    }
+
+    if(c.bottom!==undefined){
+        p.y=(pp.height||height)-p.height-constraintValue(c.bottom,pp.height||height);
+    }
+
+    if(c.width!==undefined){
+        p.width=constraintValue(c.width,pp.width||width);
+    }
+
+    if(c.height!==undefined){
+        p.height=constraintValue(c.height,pp.height||height);
+    }
+
+    if(c.centerX!==undefined){
+        p.x=(pp.width||width)/2-p.width/2+constraintValue(c.centerX,pp.width||width);
+    }
+
+    if(c.centerY!==undefined){
+        p.y=(pp.height||height)/2-p.height/2+constraintValue(c.centerY,pp.height||height);
+    }
+}
+
+// Layers
+function setLayer(id,z){
+    return modifyObject(id,{zIndex:z});
+}
+
+function getLayer(id){
+    var z=getProperty(id,"zIndex");
+
+    if(z===undefined){
+        return 0;
+    }
+
+    return z;
+}
+
+function moveForward(id){
+    return setLayer(id,getLayer(id)+1);
+}
+
+function moveBackward(id){
+    return setLayer(id,getLayer(id)-1);
+}
+
+function bringToFront(id){
+    var maxZ=getLayer(id);
+    var i;
+    var obj;
+
+    if(!getObject(id)){
+        return;
+    }
+
+    for(i=0;i<elementNames.length;i++){
+        obj=elements[elementNames[i]];
+
+        if(obj){
+            maxZ=Math.max(
+                maxZ,
+                obj.properties.zIndex||0
+            );
+        }
+    }
+
+    return setLayer(id,maxZ+1);
+}
+
+function sendToBack(id){
+    var minZ=getLayer(id);
+    var i;
+    var obj;
+
+    if(!getObject(id)){
+        return;
+    }
+
+    for(i=0;i<elementNames.length;i++){
+        obj=elements[elementNames[i]];
+
+        if(obj){
+            minZ=Math.min(
+                minZ,
+                obj.properties.zIndex||0
+            );
+        }
+    }
+
+    return setLayer(id,minZ-1);
+}
+
+function sortByZIndex(list){
+    var out=list.slice(0);
+    var i;
+    var j;
+    var saved;
+    var savedZ;
+    var z;
+
+    for(i=1;i<out.length;i++){
+        saved=out[i];
+
+        if(elements[saved]&&elements[saved].properties){
+            savedZ=elements[saved].properties.zIndex||0;
+        }else{
+            savedZ=0;
+        }
+
+        j=i-1;
+
+        while(j>=0){
+            if(elements[out[j]]&&elements[out[j]].properties){
+                z=elements[out[j]].properties.zIndex||0;
+            }else{
+                z=0;
+            }
+
+            if(z<=savedZ){
+                break;
+            }
+
+            out[j+1]=out[j];
+            j--;
+        }
+
+        out[j+1]=saved;
+    }
+
+    return out;
+}
+
+function getSortedChildren(obj){
+    if(!obj||!obj.children||obj.children.length===0){
+        return null;
+    }
+
+    if(obj.children.length===1){
+        return obj.children;
+    }
+
+    if(obj.childrenDirty){
+        obj.sortedChildren=sortByZIndex(obj.children);
+        obj.childrenDirty=false;
+    }
+
+    return obj.sortedChildren;
+}
+
+function getRootNames(){
+    var i;
+    var obj;
+
+    if(rootsDirty){
+        rootNames=[];
+
+        for(i=0;i<elementNames.length;i++){
+            obj=elements[elementNames[i]];
+
+            if(obj&&!obj.parent){
+                rootNames.push(elementNames[i]);
+            }
+        }
+
+        rootNames=sortByZIndex(rootNames);
+        rootsDirty=false;
+    }
+
+    return rootNames;
+}
+
+// Blend / color / gradients
+function setBlendMode(mode){
+    var m;
+
+    if(typeof mode!=="string"){
+        mode="BLEND";
+    }
+
+    m=mode.toUpperCase();
+
+    if(m==="BLEND"){
+        blendMode("BLEND");
+    }else if(m==="ADD"){
+        blendMode(ADD);
+    }else if(m==="SUBTRACT"){
+        blendMode(SUBTRACT);
+    }else if(m==="DARKEST"){
+        blendMode(DARKEST);
+    }else if(m==="LIGHTEST"){
+        blendMode(LIGHTEST);
+    }else if(m==="DIFFERENCE"){
+        blendMode(DIFFERENCE);
+    }else if(m==="EXCLUSION"){
+        blendMode(EXCLUSION);
+    }else if(m==="MULTIPLY"){
+        blendMode(MULTIPLY);
+    }else if(m==="SCREEN"){
+        blendMode(SCREEN);
+    }else if(m==="REPLACE"){
+        blendMode(REPLACE);
+    }else{
+        blendMode(BLEND);
+        m="BLEND";
+    }
+
+    currentBlend=m;
+
+    return m;
+}
+
+function colorWithOpacity(c,opacity){
+    return color(
+        red(c),
+        green(c),
+        blue(c),
+        alpha(c)*clampValue(opacity,0,1)
+    );
+}
+
+function gradientColor(a,b,t){
+    return color(
+        red(a)+(red(b)-red(a))*t,
+        green(a)+(green(b)-green(a))*t,
+        blue(a)+(blue(b)-blue(a))*t,
+        alpha(a)+(alpha(b)-alpha(a))*t
+    );
+}
+
+function drawLinearGradient(x,y,w,h,c1,c2,vertical,steps){
+    var i;
+    var t;
+    var size;
+
+    if(steps===undefined){
+        steps=20;
+    }
+
+    steps=Math.max(2,steps);
+
+    noStroke();
+
+    if(vertical===false){
+        size=w/steps;
+
+        for(i=0;i<steps;i++){
+            t=i/(steps-1);
+
+            fill(
+                gradientColor(
+                    c1,
+                    c2,
+                    t
+                )
+            );
+
+            rect(
+                x+i*size,
+                y,
+                size+1,
+                h
+            );
+        }
+    }else{
+        size=h/steps;
+
+        for(i=0;i<steps;i++){
+            t=i/(steps-1);
+
+            fill(
+                gradientColor(
+                    c1,
+                    c2,
+                    t
+                )
+            );
+
+            rect(
+                x,
+                y+i*size,
+                w,
+                size+1
+            );
+        }
+    }
+}
+
+function drawRadialGradient(x,y,w,h,c1,c2,steps){
+    var i;
+    var t;
+    var size;
+
+    if(steps===undefined){
+        steps=20;
+    }
+
+    steps=Math.max(2,steps);
+
+    noStroke();
+
+    for(i=steps-1;i>=0;i--){
+        t=i/(steps-1);
+        size=Math.max(w,h)*(1-t);
+
+        fill(
+            gradientColor(
+                c2,
+                c1,
+                t
+            )
+        );
+
+        ellipse(
+            x,
+            y,
+            size,
+            size
+        );
+    }
+}
+
+function setGradient(id,type,a,b,steps,vertical){
+    return modifyObject(
+        id,
+        {
+            gradient:{
+                type:type,
+                startColor:a,
+                endColor:b,
+                steps:steps||20,
+                vertical:vertical!==false
+            }
+        }
+    );
+}
+
+function clearGradient(id){
+    return modifyObject(id,{gradient:null});
+}
+
+// Shadows / images
+function setShadow(id,shadow){
+    return modifyObject(id,{shadow:shadow});
+}
+
+function clearShadow(id){
+    return modifyObject(id,{shadow:null});
+}
+
+function drawShadow(obj,p,opacity){
+    var s=p.shadow;
+    var i;
+    var blur;
+    var c;
+    var a;
+
+    if(!s||s.enabled===false){
+        return;
+    }
+
+    blur=Math.max(1,s.blur||3);
+    c=s.color||color(0,0,0,80);
+    a=alpha(c)*opacity;
+
+    for(i=blur;i>0;i--){
+        fill(
+            color(
+                red(c),
+                green(c),
+                blue(c),
+                a/blur
+            )
+        );
+
+        if(obj.type==="rect"){
+            rectMode(CORNER);
+
+            rect(
+                (s.x||4)-i*.25,
+                (s.y||4)-i*.25,
+                p.width+i*.5,
+                p.height+i*.5,
+                p.radius||0
+            );
+        }else if(obj.type==="ellipse"){
+            ellipseMode(CENTER);
+
+            ellipse(
+                s.x||4,
+                s.y||4,
+                p.width+i*.5,
+                p.height+i*.5
+            );
+        }
+    }
+}
+
+function setImageCrop(id,sx,sy,sw,sh){
+    return modifyObject(
+        id,
+        {
+            srcX:sx,
+            srcY:sy,
+            srcWidth:sw,
+            srcHeight:sh
+        }
+    );
+}
+
+function setSpriteSheet(id,cols,rows,frame){
+    return modifyObject(
+        id,
+        {
+            spriteSheet:{
+                cols:cols,
+                rows:rows,
+                frame:frame||0
+            }
+        }
+    );
+}
+
+function setSpriteFrame(id,frame){
+    var obj=getObject(id);
+
+    if(!obj){
+        return;
+    }
+
+    if(!obj.properties.spriteSheet){
+        obj.properties.spriteSheet={
+            cols:1,
+            rows:1,
+            frame:0
+        };
+    }
+
+    obj.properties.spriteSheet.frame=frame;
+    markDirty();
+
+    return obj;
+}
+
+function setMask(id,image){
+    return modifyObject(id,{maskImage:image});
+}
+
+function clearMask(id){
+    return modifyObject(id,{maskImage:null});
+}
+
+function setClipRect(id,x,y,w,h){
+    return modifyObject(
+        id,
+        {
+            clipRect:{
+                x:x,
+                y:y,
+                w:w,
+                h:h
+            }
+        }
+    );
+}
+
+function clearClip(id){
+    return modifyObject(id,{clipRect:null});
+}
+
+function drawObjectImage(p,obj){
+    var img=p.img;
+    var sw;
+    var sh;
+    var sx;
+    var sy;
+
+    if(!img){
+        return;
+    }
+
+    if(p.spriteSheet){
+        sw=img.width/p.spriteSheet.cols;
+        sh=img.height/p.spriteSheet.rows;
+
+        sx=(p.spriteSheet.frame%p.spriteSheet.cols)*sw;
+        sy=floor(p.spriteSheet.frame/p.spriteSheet.cols)*sh;
+
+        image(
+            img,
+            0,
+            0,
+            p.width,
+            p.height,
+            sx,
+            sy,
+            sw,
+            sh
+        );
+    }else if(p.srcWidth!==undefined){
+        image(
+            img,
+            0,
+            0,
+            p.width,
+            p.height,
+            p.srcX||0,
+            p.srcY||0,
+            p.srcWidth,
+            p.srcHeight
+        );
+    }else{
+        image(
+            img,
+            0,
+            0,
+            p.width,
+            p.height
+        );
+    }
+}
+
+// World transforms
+function getWorldTransform(id){
+    var name=resolveKey(id);
+    var chain=[];
+    var obj;
+    var p;
+    var i;
+    var x=0;
+    var y=0;
+    var rotation=0;
+    var scaleX=1;
+    var scaleY=1;
+    var angle;
+    var c;
+    var s;
+
+    if(name===undefined){
+        return{
+            x:0,
+            y:0,
+            rotation:0,
+            scaleX:1,
+            scaleY:1
+        };
+    }
+
+    while(name&&elements[name]){
+        chain.push(name);
+        name=elements[name].parent;
+    }
+
+    for(i=chain.length-1;i>=0;i--){
+        obj=elements[chain[i]];
+        p=obj.properties;
+
+        angle=rotation*PI/180;
+        c=cos(angle);
+        s=sin(angle);
+
+        x+=c*(p.x||0)*scaleX-s*(p.y||0)*scaleY;
+        y+=s*(p.x||0)*scaleX+c*(p.y||0)*scaleY;
+
+        rotation+=p.rotation||0;
+        scaleX*=p.scaleX===undefined?1:p.scaleX;
+        scaleY*=p.scaleY===undefined?1:p.scaleY;
+    }
+
+    return{
+        x:x,
+        y:y,
+        rotation:rotation,
+        scaleX:scaleX,
+        scaleY:scaleY
+    };
+}
+
+function getObjectBounds(id){
+    var obj=getObject(id);
+    var p;
+    var t;
+    var w;
+    var h;
+    var radius;
+
+    if(!obj){
+        return;
+    }
+
+    p=obj.properties;
+    t=getWorldTransform(id);
+
+    w=Math.abs(p.width||0)*Math.abs(t.scaleX);
+    h=Math.abs(p.height||0)*Math.abs(t.scaleY);
+
+    if(obj.type==="line"){
+        w=Math.abs((p.x2||0)-(p.x||0));
+        h=Math.abs((p.y2||0)-(p.y||0));
+    }
+
+    radius=sqrt(w*w+h*h)/2;
+
+    return{
+        x:t.x-radius,
+        y:t.y-radius,
+        w:radius*2,
+        h:radius*2
+    };
+}
+
+// Culling / dirty regions
+function isRectVisible(bounds){
+    if(!bounds){
+        return true;
+    }
+
+    return!(
+        bounds.x>width+cullingMargin||
+        bounds.y>height+cullingMargin||
+        bounds.x+bounds.w<-cullingMargin||
+        bounds.y+bounds.h<-cullingMargin
+    );
+}
+
+function shouldCull(id){
+    var obj=getObject(id);
+
+    if(
+        !cullingEnabled||
+        !obj||
+        obj.properties.cull===false
+    ){
+        return false;
+    }
+
+    return!isRectVisible(
+        getObjectBounds(id)
+    );
+}
+
+function setCulling(enabled,margin){
+    cullingEnabled=enabled!==false;
+
+    if(margin!==undefined){
+        cullingMargin=Math.max(0,margin);
+    }
+
+    return cullingEnabled;
+}
+
+function markDirtyRect(x,y,w,h){
+    if(dirtyRectsEnabled){
+        dirtyRects.push({
+            x:x,
+            y:y,
+            w:w,
+            h:h
+        });
+    }
+
+    dirty=true;
+}
+
+function markObjectDirty(id){
+    var bounds=getObjectBounds(id);
+
+    if(bounds){
+        markDirtyRect(
+            bounds.x-cullingMargin,
+            bounds.y-cullingMargin,
+            bounds.w+cullingMargin*2,
+            bounds.h+cullingMargin*2
+        );
+    }else{
+        dirty=true;
+    }
+}
+
+function getDirtyRects(){
+    return dirtyRects.slice(0);
+}
+
+function clearDirtyRects(){
+    dirtyRects=[];
+}
+
+function setDirtyRectsEnabled(value){
+    dirtyRectsEnabled=value!==false;
+    return dirtyRectsEnabled;
+}
+
+// Events / hit testing
+function onObject(id,eventName,fn){
+    var obj=getObject(id);
+
+    if(
+        !obj||
+        typeof fn!=="function"
+    ){
+        return;
+    }
+
+    if(!obj.events[eventName]){
+        obj.events[eventName]=[];
+    }
+
+    obj.events[eventName].push(fn);
+
+    return fn;
+}
+
+function offObject(id,eventName,fn){
+    var obj=getObject(id);
+    var list;
+    var i;
+
+    if(!obj||!obj.events[eventName]){
+        return;
+    }
+
+    list=obj.events[eventName];
+
+    for(i=list.length-1;i>=0;i--){
+        if(!fn||list[i]===fn){
+            list.splice(i,1);
+        }
+    }
+}
+
+function emitObject(id,eventName,data){
+    var obj=getObject(id);
+    var list;
+    var i;
+
+    if(!obj||!obj.events[eventName]){
+        return;
+    }
+
+    list=obj.events[eventName];
+
+    for(i=0;i<list.length;i++){
+        list[i](obj,data);
+    }
+}
+
+function lineHit(px,py,x1,y1,x2,y2,tolerance){
+    var dx=x2-x1;
+    var dy=y2-y1;
+    var length2=dx*dx+dy*dy;
+    var t;
+    var x;
+    var y;
+
+    if(length2===0){
+        return dist(
+            px,
+            py,
+            x1,
+            y1
+        )<=tolerance;
+    }
+
+    t=(
+        (px-x1)*dx+
+        (py-y1)*dy
+    )/length2;
+
+    t=clampValue(t,0,1);
+
+    x=x1+t*dx;
+    y=y1+t*dy;
+
+    return dist(px,py,x,y)<=tolerance;
+}
+
+function hitTest(id,px,py){
+    var obj=getObject(id);
+    var p;
+    var transform;
+    var angle;
+    var c;
+    var s;
+    var dx;
+    var dy;
+    var x;
+    var y;
+    var w;
+    var h;
+
+    if(
+        !obj||
+        !obj.properties||
+        obj.properties.visible===false
+    ){
+        return false;
+    }
+
+    p=obj.properties;
+    transform=getWorldTransform(id);
+
+    angle=transform.rotation*PI/180;
+    c=cos(angle);
+    s=sin(angle);
+
+    dx=px-transform.x;
+    dy=py-transform.y;
+
+    x=(dx*c+dy*s)/(transform.scaleX||1);
+    y=(-dx*s+dy*c)/(transform.scaleY||1);
+
+    w=p.width||0;
+    h=p.height||0;
+
+    if(obj.type==="ellipse"){
+        dx=x-w/2;
+        dy=y-h/2;
+
+        return(
+            dx*dx/(w*w/4||1)+
+            dy*dy/(h*h/4||1)
+        )<=1;
+    }
+
+    if(obj.type==="line"){
+        return lineHit(
+            x,
+            y,
+            0,
+            0,
+            (p.x2||0)-(p.x||0),
+            (p.y2||0)-(p.y||0),
+            Math.max(4,p.strokeWeight||1)
+        );
+    }
+
+    return(
+        x>=0&&
+        y>=0&&
+        x<=w&&
+        y<=h
+    );
+}
+
+function hitObjectRecursive(name,x,y){
+    var obj=elements[name];
+    var children;
+    var i;
+    var hit;
+
+    if(
+        !obj||
+        !obj.properties||
+        obj.properties.visible===false
+    ){
+        return;
+    }
+
+    children=getSortedChildren(obj);
+
+    if(children){
+        for(i=children.length-1;i>=0;i--){
+            hit=hitObjectRecursive(
+                children[i],
+                x,
+                y
+            );
+
+            if(hit){
+                return hit;
+            }
+        }
+    }
+
+    if(hitTest(name,x,y)){
+        return name;
+    }
+}
+
+function hitTestPoint(x,y){
+    var roots=getRootNames();
+    var i;
+    var hit;
+
+    for(i=roots.length-1;i>=0;i--){
+        hit=hitObjectRecursive(
+            roots[i],
+            x,
+            y
+        );
+
+        if(hit){
+            return hit;
+        }
+    }
+}
+
+function setSelected(id){
+    selectedObject=resolveKey(id);
+
+    if(selectedObject){
+        emitObject(
+            selectedObject,
+            "select"
+        );
+    }
+
+    return selectedObject;
+}
+
+function clearSelection(){
+    if(selectedObject){
+        emitObject(
+            selectedObject,
+            "deselect"
+        );
+    }
+
+    selectedObject=null;
+}
+
+function getSelected(){
+    return selectedObject;
+}
+
+function setFocus(id){
+    focusedObject=resolveKey(id);
+
+    if(focusedObject){
+        emitObject(
+            focusedObject,
+            "focus"
+        );
+    }
+
+    return focusedObject;
+}
+
+function clearFocus(){
+    if(focusedObject){
+        emitObject(
+            focusedObject,
+            "blur"
+        );
+    }
+
+    focusedObject=null;
+}
+
+function getFocus(){
+    return focusedObject;
+}
+
+function getHoverObject(){
+    return hoverObject;
+}
+
+function getDragObject(){
+    return dragObject;
+}
+
+function pointerMove(x,y){
+    var target=hitTestPoint(x,y);
+
+    if(target!==hoverObject){
+        if(hoverObject){
+            emitObject(
+                hoverObject,
+                "leave",
+                {x:x,y:y}
+            );
+        }
+
+        hoverObject=target;
+
+        if(target){
+            emitObject(
+                target,
+                "enter",
+                {x:x,y:y}
+            );
+        }
+    }
+
+    if(target){
+        emitObject(
+            target,
+            "hover",
+            {x:x,y:y}
+        );
+    }
+
+    if(downObject){
+        dragObject=downObject;
+
+        emitObject(
+            downObject,
+            "drag",
+            {x:x,y:y}
+        );
+    }
+}
+
+function pointerDown(x,y,button){
+    downObject=hitTestPoint(x,y);
+    dragObject=null;
+
+    if(downObject){
+        setSelected(downObject);
+        setFocus(downObject);
+
+        emitObject(
+            downObject,
+            "down",
+            {
+                x:x,
+                y:y,
+                button:button
+            }
+        );
+    }
+}
+
+function pointerUp(x,y,button){
+    var target=hitTestPoint(x,y);
+    var down=downObject;
+    var now=millis();
+
+    if(down){
+        emitObject(
+            down,
+            "up",
+            {
+                x:x,
+                y:y,
+                button:button
+            }
+        );
+    }
+
+    if(dragObject){
+        emitObject(
+            dragObject,
+            "dragEnd",
+            {
+                x:x,
+                y:y
+            }
+        );
+    }else if(down&&target===down){
+        if(
+            lastClickObject===down&&
+            now-lastClickTime<350
+        ){
+            emitObject(
+                down,
+                "doubleClick",
+                {
+                    x:x,
+                    y:y,
+                    button:button
+                }
+            );
+
+            lastClickObject=null;
+        }else{
+            emitObject(
+                down,
+                "click",
+                {
+                    x:x,
+                    y:y,
+                    button:button
+                }
+            );
+
+            lastClickObject=down;
+            lastClickTime=now;
+        }
+    }
+
+    downObject=null;
+    dragObject=null;
+}
+
+function pointerPressed(x,y){
+    pointerDown(x,y);
+}
+
+function pointerReleased(x,y){
+    pointerUp(x,y);
+}
+
+function pointerDragged(x,y){
+    pointerMove(x,y);
+}
+
+function dispatchKeyPressed(keyValue,keyCodeValue){
+    if(focusedObject){
+        emitObject(
+            focusedObject,
+            "keyPressed",
+            {
+                key:keyValue,
+                keyCode:keyCodeValue
+            }
+        );
+    }
+}
+
+function dispatchKeyReleased(keyValue,keyCodeValue){
+    if(focusedObject){
+        emitObject(
+            focusedObject,
+            "keyReleased",
+            {
+                key:keyValue,
+                keyCode:keyCodeValue
+            }
+        );
+    }
+}
+
+var touchDown=pointerDown;
+var touchUp=pointerUp;
+var touchMove=pointerMove;
+
+// Animation
+function makeAnimation(name,data,duration,easingName,options,callback){
+    var obj=elements[name];
+    var targets=[];
+    var p;
+
+    if(!obj||!obj.properties||!data){
+        return;
+    }
+
+    if(
+        typeof duration!=="number"||
+        duration<0
+    ){
+        duration=300;
+    }
+
+    if(!options||typeof options!=="object"){
+        options={};
+    }
+
+    for(p in data){
+        if(
+            data.hasOwnProperty(p)&&
+            typeof data[p]==="number"&&
+            typeof obj.properties[p]==="number"
+        ){
+            targets.push({
+                name:p,
+                start:obj.properties[p],
+                end:data[p]
+            });
+        }
+    }
+
+    return{
+        objectName:name,
+        targets:targets,
+        duration:duration,
+        delay:Math.max(
+            0,
+            options.delay||0
+        ),
+        repeat:
+            typeof options.repeat==="number"?
+            options.repeat:
+            0,
+        yoyo:options.yoyo===true,
+        reverse:false,
+        startTime:millis(),
+        easing:getEasing(easingName),
+        callback:
+            typeof callback==="function"?
+            callback:
+            options.callback,
+        onStart:options.onStart,
+        onUpdate:options.onUpdate,
+        onRepeat:options.onRepeat,
+        started:false,
+        paused:false,
+        pauseTime:0
+    };
+}
+
+function isAnimating(id){
+    var name=resolveKey(id);
+    var i;
+
+    for(i=0;i<animations.length;i++){
+        if(
+            animations[i].objectName===name
+        ){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function startAnimation(animation){
+    animations.push(animation);
+    animationRunning=true;
+    loop();
+    return animation;
+}
+
+function playQueuedAnimation(name){
+    var queue=animationQueues[name];
+
+    if(
+        !queue||
+        queue.length===0||
+        isAnimating(name)
+    ){
+        return;
+    }
+
+    startAnimation(
+        queue.shift()
+    );
+}
+
+function stopAnimation(id){
+    var name=resolveKey(id);
+    var i;
+    var count=0;
+
+    if(name===undefined){
+        return 0;
+    }
+
+    for(i=animations.length-1;i>=0;i--){
+        if(
+            animations[i].objectName===name
+        ){
+            animations.splice(i,1);
+            count++;
+        }
+    }
+
+    if(animations.length===0){
+        animationRunning=false;
+        noLoop();
+    }
+
+    return count;
+}
+
+function clearAnimationQueue(id){
+    var name=resolveKey(id);
+
+    if(name!==undefined){
+        animationQueues[name]=[];
+    }
+}
+
+function animateObject(id,data,duration,easingName,options,callback){
+    var name=resolveKey(id);
+    var animation;
+
+    if(name===undefined){
+        return;
+    }
+
+    if(
+        easingName&&
+        typeof easingName==="object"
+    ){
+        options=easingName;
+        easingName=options.easing;
+    }
+
+    if(!options||typeof options!=="object"){
+        options={};
+    }
+
+    animation=makeAnimation(
+        name,
+        data,
+        duration,
+        easingName,
+        options,
+        callback
+    );
+
+    if(
+        !animation||
+        animation.targets.length===0
+    ){
+        return getObject(id);
+    }
+
+    if(options.queue===true){
+        if(!animationQueues[name]){
+            animationQueues[name]=[];
+        }
+
+        animationQueues[name].push(
+            animation
+        );
+
+        playQueuedAnimation(name);
+    }else{
+        stopAnimation(name);
+        startAnimation(animation);
+    }
+
+    return animation;
+}
+
+function tween(id,data,duration,easingName,options,callback){
+    return animateObject(
+        id,
+        data,
+        duration,
+        easingName,
+        options,
+        callback
+    );
+}
+
+function queueAnimation(id,data,duration,easingName,options,callback){
+    var opts=options||{};
+
+    opts.queue=true;
+
+    return animateObject(
+        id,
+        data,
+        duration,
+        easingName,
+        opts,
+        callback
+    );
+}
+
+function pauseAnimation(id){
+    var name=resolveKey(id);
+    var i;
+    var now=millis();
+
+    for(i=0;i<animations.length;i++){
+        if(
+            animations[i].objectName===name&&
+            !animations[i].paused
+        ){
+            animations[i].paused=true;
+            animations[i].pauseTime=now;
+        }
+    }
+}
+
+function resumeAnimation(id){
+    var name=resolveKey(id);
+    var i;
+    var now=millis();
+
+    for(i=0;i<animations.length;i++){
+        if(
+            animations[i].objectName===name&&
+            animations[i].paused
+        ){
+            animations[i].startTime+=
+                now-animations[i].pauseTime;
+
+            animations[i].paused=false;
+        }
+    }
+
+    if(animations.length>0){
+        loop();
+    }
+}
+
+function stopAllAnimations(){
+    animations=[];
+    animationQueues={};
+    animationRunning=false;
+    noLoop();
+}
+
+function getAnimationCount(){
+    return animations.length;
+}
+
+function updateAnimations(){
+    var now=millis();
+    var i;
+    var j;
+    var animation;
+    var obj;
+    var elapsed;
+    var t;
+    var eased;
+    var target;
+
+    for(
+        i=animations.length-1;
+        i>=0;
+        i--
+    ){
+        animation=animations[i];
+
+        if(animation.paused){
+            continue;
+        }
+
+        obj=elements[
+            animation.objectName
+        ];
+
+        if(!obj){
+            animations.splice(i,1);
+            continue;
+        }
+
+        elapsed=
+            now-
+            animation.startTime-
+            animation.delay;
+
+        if(elapsed<0){
+            continue;
+        }
+
+        if(!animation.started){
+            animation.started=true;
+
+            if(animation.onStart){
+                animation.onStart(
+                    obj,
+                    animation
+                );
+            }
+        }
+
+        if(animation.duration<=0){
+            t=1;
+        }else{
+            t=clampValue(
+                elapsed/animation.duration,
+                0,
+                1
+            );
+        }
+
+        eased=animation.easing(t);
+
+        if(animation.reverse){
+            eased=1-eased;
+        }
+
+        for(
+            j=0;
+            j<animation.targets.length;
+            j++
+        ){
+            target=animation.targets[j];
+
+            obj.properties[target.name]=
+                target.start+
+                (target.end-target.start)*
+                eased;
+        }
+
+        if(animation.onUpdate){
+            animation.onUpdate(
+                obj,
+                t,
+                animation
+            );
+        }
+
+        dirty=true;
+
+        if(t>=1){
+            if(
+                animation.repeat===-1||
+                animation.repeat>0
+            ){
+                if(animation.repeat>0){
+                    animation.repeat--;
+                }
+
+                if(animation.yoyo){
+                    animation.reverse=
+                        !animation.reverse;
+                }
+
+                animation.startTime=now;
+                animation.started=false;
+
+                if(animation.onRepeat){
+                    animation.onRepeat(
+                        obj,
+                        animation
+                    );
+                }
+            }else{
+                for(
+                    j=0;
+                    j<animation.targets.length;
+                    j++
+                ){
+                    target=
+                        animation.targets[j];
+
+                    obj.properties[target.name]=
+                        animation.reverse?
+                        target.start:
+                        target.end;
+                }
+
+                if(animation.callback){
+                    animation.callback(
+                        obj,
+                        animation
+                    );
+                }
+
+                animations.splice(i,1);
+
+                playQueuedAnimation(
+                    animation.objectName
+                );
+            }
+        }
+    }
+
+    if(animations.length===0){
+        animationRunning=false;
+        noLoop();
+    }
+}
+
+function animateTimeline(id,frames,options,callback){
+    var i;
+    var frame;
+    var previousTime=0;
+    var opts=options||{};
+
+    if(!frames||frames.length===0){
+        return;
+    }
+
+    for(i=0;i<frames.length;i++){
+        frame=frames[i];
+
+        if(!frame||!frame.properties){
+            continue;
+        }
+
+        animateObject(
+            id,
+            frame.properties,
+            Math.max(
+                0,
+                (frame.time||0)-previousTime
+            ),
+            frame.easing||"linear",
+            i===0?opts:{queue:true},
+            i===frames.length-1?
+                callback:
+                null
+        );
+
+        previousTime=frame.time||0;
+    }
+}
+
+// Cache
+function setRenderCache(id,image,w,h){
+    var obj=getObject(id);
+
+    if(!obj){
+        return;
+    }
+
+    obj.cacheImage=image;
+    obj.cacheW=w||obj.properties.width||0;
+    obj.cacheH=h||obj.properties.height||0;
+    obj.properties.cache=true;
+
+    return obj;
+}
+
+function clearRenderCache(id){
+    var obj=getObject(id);
+
+    if(!obj){
+        return;
+    }
+
+    obj.cacheImage=null;
+    obj.cacheW=0;
+    obj.cacheH=0;
+    obj.properties.cache=false;
+
+    return obj;
+}
+
+function captureRenderCache(id,x,y,w,h){
+    return setRenderCache(
+        id,
+        get(x,y,w,h),
+        w,
+        h
+    );
+}
+
+function setCacheEnabled(value){
+    renderCacheEnabled=value!==false;
+    return renderCacheEnabled;
+}
+
+// Renderer
+function drawPrimitive(obj,p,opacity){
+    var gradient;
+
+    if(
+        p.blendMode&&
+        p.blendMode!==currentBlend
+    ){
+        setBlendMode(p.blendMode);
+    }
+
+    if(p.strokeColor!==undefined){
+        stroke(
+            colorWithOpacity(
+                p.strokeColor,
+                opacity
+            )
+        );
+
+        strokeWeight(
+            p.strokeWeight===undefined?
+            1:
+            p.strokeWeight
+        );
+    }else{
+        noStroke();
+    }
+
+    if(obj.type==="text"){
+        fill(
+            colorWithOpacity(
+                p.fillColor,
+                opacity
+            )
+        );
+
+        textSize(
+            p.textSize||20
+        );
+
+        text(
+            p.text,
+            0,
+            0
+        );
+    }else if(obj.type==="rect"){
+        rectMode(CORNER);
+
+        gradient=p.gradient;
+
+        if(gradient){
+            if(gradient.type==="radial"){
+                drawRadialGradient(
+                    0,
+                    0,
+                    p.width,
+                    p.height,
+                    gradient.startColor,
+                    gradient.endColor,
+                    gradient.steps
+                );
+            }else{
+                drawLinearGradient(
+                    0,
+                    0,
+                    p.width,
+                    p.height,
+                    gradient.startColor,
+                    gradient.endColor,
+                    gradient.vertical,
+                    gradient.steps
+                );
+            }
+        }else{
+            fill(
+                colorWithOpacity(
+                    p.fillColor,
+                    opacity
+                )
+            );
+
+            rect(
+                0,
+                0,
+                p.width,
+                p.height,
+                p.radius||0
+            );
+        }
+    }else if(obj.type==="ellipse"){
+        ellipseMode(CENTER);
+
+        if(p.gradient){
+            drawRadialGradient(
+                0,
+                0,
+                p.width,
+                p.height,
+                p.gradient.startColor,
+                p.gradient.endColor,
+                p.gradient.steps
+            );
+        }else{
+            fill(
+                colorWithOpacity(
+                    p.fillColor,
+                    opacity
+                )
+            );
+
+            ellipse(
+                0,
+                0,
+                p.width,
+                p.height
+            );
+        }
+    }else if(obj.type==="line"){
+        stroke(
+            colorWithOpacity(
+                p.strokeColor||color(0),
+                opacity
+            )
+        );
+
+        strokeWeight(
+            p.strokeWeight||1
+        );
+
+        line(
+            0,
+            0,
+            (p.x2||0)-(p.x||0),
+            (p.y2||0)-(p.y||0)
+        );
+    }else if(obj.type==="image"){
+        imageMode(CORNER);
+        drawObjectImage(p,obj);
+    }
+
+    renderStats.drawCalls++;
+}
+
+function renderElement(name,parentOpacity){
+    var obj=elements[name];
+    var p;
+    var opacity;
+    var children;
+    var i;
+
+    if(
+        !obj||
+        !obj.properties||
+        obj.properties.visible===false
+    ){
+        return;
+    }
+
+    applyConstraints(obj);
+
+    if(shouldCull(name)){
+        renderStats.culled++;
+        return;
+    }
+
+    p=obj.properties;
+
+    opacity=clampValue(
+        (
+            p.opacity===undefined?
+            1:
+            p.opacity
+        )*parentOpacity,
+        0,
+        1
+    );
+
+    if(opacity<=0){
+        return;
+    }
+
+    renderStats.objects++;
+
+    pushMatrix();
+
+    translate(
+        p.x||0,
+        p.y||0
+    );
+
+    if(p.rotation){
+        rotate(p.rotation);
+    }
+
+    scale(
+        p.scaleX===undefined?1:p.scaleX,
+        p.scaleY===undefined?1:p.scaleY
+    );
+
+    if(p.anchorX||p.anchorY){
+        translate(
+            -(p.anchorX||0)*(p.width||0),
+            -(p.anchorY||0)*(p.height||0)
+        );
+    }
+
+    if(p.pivotX||p.pivotY){
+        translate(
+            -(p.pivotX||0),
+            -(p.pivotY||0)
+        );
+    }
+
+    if(p.shadow){
+        drawShadow(
+            obj,
+            p,
+            opacity
+        );
+    }
+
+    if(
+        p.clipRect&&
+        typeof clip==="function"
+    ){
+        clip(
+            p.clipRect.x,
+            p.clipRect.y,
+            p.clipRect.w,
+            p.clipRect.h
+        );
+    }
+
+    if(
+        p.cache&&
+        renderCacheEnabled&&
+        obj.cacheImage
+    ){
+        imageMode(CORNER);
+
+        image(
+            obj.cacheImage,
+            0,
+            0,
+            obj.cacheW,
+            obj.cacheH
+        );
+
+        renderStats.cached++;
+        renderStats.drawCalls++;
+    }else if(obj.type!=="group"){
+        drawPrimitive(
+            obj,
+            p,
+            opacity
+        );
+    }
+
+    children=getSortedChildren(obj);
+
+    if(children){
+        for(
+            i=0;
+            i<children.length;
+            i++
+        ){
+            renderElement(
+                children[i],
+                opacity
+            );
+        }
+    }
+
+    if(
+        p.clipRect&&
+        typeof noClip==="function"
+    ){
+        noClip();
+    }
+
+    popMatrix();
+}
+
+function render(){
+    var roots=getRootNames();
+    var i;
+
+    updateAnimations();
+
+    renderStats.objects=0;
+    renderStats.drawCalls=0;
+    renderStats.culled=0;
+    renderStats.cached=0;
+
+    background(elements.background);
+
+    if(currentBlend!=="BLEND"){
+        setBlendMode("BLEND");
+    }
+
+    for(i=0;i<roots.length;i++){
+        renderElement(
+            roots[i],
+            1
+        );
+    }
+
+    dirty=false;
+    clearDirtyRects();
+}
+
+// Batch
+function batchRects(list,fillColor){
+    var i;
+
+    if(!list){
+        return;
+    }
+
+    rectMode(CORNER);
+    noStroke();
+    fill(fillColor);
+
+    for(i=0;i<list.length;i++){
+        rect(
+            list[i].x,
+            list[i].y,
+            list[i].w,
+            list[i].h,
+            list[i].radius||0
+        );
+    }
+}
+
+function batchEllipses(list,fillColor){
+    var i;
+
+    if(!list){
+        return;
+    }
+
+    ellipseMode(CENTER);
+    noStroke();
+    fill(fillColor);
+
+    for(i=0;i<list.length;i++){
+        ellipse(
+            list[i].x,
+            list[i].y,
+            list[i].w,
+            list[i].h
+        );
+    }
+}
+
+function batchLines(list,strokeColor,weight){
+    var i;
+
+    if(!list){
+        return;
+    }
+
+    stroke(strokeColor);
+    strokeWeight(weight||1);
+
+    for(i=0;i<list.length;i++){
+        line(
+            list[i].x1,
+            list[i].y1,
+            list[i].x2,
+            list[i].y2
+        );
+    }
+}
+
+function beginBatch(){
+    beginUpdate();
+}
+
+function endBatch(){
+    endUpdate();
+}
+
+// Delete
+function deleteObject(id){
+    var name=resolveKey(id);
+    var obj;
+    var i;
+
+    if(
+        name===undefined||
+        name==="background"||
+        !elements[name]
+    ){
+        return;
+    }
+
+    stopAnimation(name);
+    clearAnimationQueue(name);
+
+    obj=elements[name];
+
+    if(obj.parent){
+        removeChildName(
+            obj.parent,
+            name
+        );
+    }
+
+    for(
+        i=obj.children.length-1;
+        i>=0;
+        i--
+    ){
+        if(elements[obj.children[i]]){
+            elements[obj.children[i]].parent=null;
+        }
+    }
+
+    delete elements[name];
+
+    for(
+        i=elementNames.length-1;
+        i>=0;
+        i--
+    ){
+        if(elementNames[i]===name){
+            elementNames.splice(i,1);
+            break;
+        }
+    }
+
+    rootsDirty=true;
+    markDirty();
+}
+
+function deleteElementByIndex(index){
+    return deleteObject(index);
+}
+
+function clearObjects(){
+    var bg=elements.background;
+
+    elements={
+        background:bg
+    };
+
+    elementNames=[];
+    rootNames=[];
+    animations=[];
+    animationQueues={};
+    selectedObject=null;
+    focusedObject=null;
+    hoverObject=null;
+    downObject=null;
+    dragObject=null;
+    rootsDirty=true;
+    dirtyRects=[];
+
+    markDirty();
+}
+
+function duplicateElement(id){
+    var source=getObject(id);
+    var copy;
+    var p;
+
+    if(!source){
+        return;
+    }
+
+    copy=createObject(
+        source.type,
+        {}
+    );
+
+    for(p in source.properties){
+        if(
+            source.properties.hasOwnProperty(p)&&
+            p!=="tags"&&
+            p!=="metadata"
+        ){
+            copy.properties[p]=
+                source.properties[p];
+        }
+    }
+
+    copy.properties.tags=
+        source.properties.tags?
+        source.properties.tags.slice(0):
+        [];
+
+    copy.properties.metadata={};
+
+    for(p in source.properties.metadata){
+        if(
+            source.properties.metadata.hasOwnProperty(p)
+        ){
+            copy.properties.metadata[p]=
+                source.properties.metadata[p];
+        }
+    }
+
+    return copy;
+}
+
+// Diagnostics
+function setBackground(a,b,c,d){
+    if(b===undefined){
+        elements.background=a;
+    }else if(d===undefined){
+        elements.background=color(a,b,c);
+    }else{
+        elements.background=color(a,b,c,d);
+    }
+
+    markDirty();
+
+    return elements.background;
+}
+
+function getRenderStats(){
+    return{
+        objects:renderStats.objects,
+        drawCalls:renderStats.drawCalls,
+        culled:renderStats.culled,
+        cached:renderStats.cached,
+        elements:elementNames.length,
+        animations:animations.length,
+        dirty:dirty
+    };
+}
+
+function debugObject(id){
+    var obj=getObject(id);
+
+    if(!obj){
+        return;
+    }
+
+    println(
+        "Object: "+resolveKey(id)+
+        " Type: "+obj.type+
+        " Parent: "+obj.parent+
+        " Children: "+obj.children.length
+    );
+
+    return obj;
+}
+
+// Effects
+function canvasEffect(effect,amount){
+    var value;
+
+    if(effect==="blur"){
+        value=amount===undefined?3:amount;
+        filter(BLUR,value);
+    }else if(effect==="grayscale"){
+        filter(GRAY);
+    }else if(effect==="invert"){
+        filter(INVERT);
+    }else if(effect==="threshold"){
+        value=amount===undefined?0.5:amount;
+        filter(THRESHOLD,value);
+    }else if(effect==="posterize"){
+        value=amount===undefined?4:amount;
+        filter(POSTERIZE,value);
+    }else if(effect==="erode"){
+        filter(ERODE);
+    }else if(effect==="dilate"){
+        filter(DILATE);
+    }else if(
+        effect==="fade"||
+        effect==="darken"
+    ){
+        value=amount===undefined?50:amount;
+        noStroke();
+        fill(0,0,0,value);
+        rectMode(CORNER);
+        rect(0,0,width,height);
+    }else if(
+        effect==="lighten"||
+        effect==="transparent"
+    ){
+        value=amount===undefined?50:amount;
+        noStroke();
+        fill(255,255,255,value);
+        rectMode(CORNER);
+        rect(0,0,width,height);
+    }
+}
+
+initEase();
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script>
+    <script>
+    var librarySource = document.getElementById("object-manager").textContent;
+    var demos = {};
+    var instances = [];
+
+    var clearDraw = function(canvasId) {
+        return "draw = function() {" +
+            "var ctx = document.getElementById('" + canvasId + "').getContext('2d');" +
+            "var fillPage = background;" +
+            "background = function() { ctx.clearRect(0, 0, width, height); };" +
+            "textAlign(LEFT, TOP);" +
+            "render();" +
+            "background = fillPage;" +
+            "};";
+    };
+
+    var examples = {
+        "c-text": clearDraw("c-text") + "createObject('text', {text:'Hello, world', textSize:32, x:28, y:36, width:300, height:36, fillColor:color(0), zIndex:2, name:'hello'}); createObject('text', {text:'textSize and fillColor live on the object.', textSize:16, x:28, y:84, width:360, height:20, fillColor:color(142,142,147), zIndex:2, name:'note'}); createObject('rect', {x:28, y:130, width:544, height:44, radius:10, fillColor:color(255), zIndex:1, name:'row'}); createObject('text', {text:'Caption', textSize:16, x:44, y:142, width:120, height:20, fillColor:color(0), zIndex:3, name:'cap'}); createObject('text', {text:'System Blue', textSize:16, x:390, y:142, width:140, height:20, fillColor:color(0,122,255), zIndex:3, name:'swatch'});",
+        "c-shapes": clearDraw("c-shapes") + "createObject('rect', {x:28, y:48, width:150, height:96, radius:16, fillColor:color(0,122,255), zIndex:2, name:'roundRect'}); createObject('text', {text:'Rounded rect', textSize:15, x:46, y:84, width:120, height:18, fillColor:color(255), zIndex:3, name:'roundLabel'}); createObject('ellipse', {x:268, y:96, width:96, height:96, fillColor:color(76,217,100), zIndex:2, name:'orb'}); createObject('line', {x:380, y:96, x2:530, y2:96, strokeColor:color(255,149,0), strokeWeight:6, zIndex:2, name:'rule'});",
+        "c-image": clearDraw("c-image") + "var winstonImage = null; if (typeof getImage === 'function') { winstonImage = getImage('creatures/Winston'); } createObject('rect', {x:28, y:48, width:96, height:96, radius:18, fillColor:color(255), zIndex:1, name:'well'}); createObject('image', {img:winstonImage, x:34, y:54, width:84, height:84, zIndex:2, name:'winston'}); createObject('text', {text:'Winston', textSize:28, x:148, y:58, width:200, height:32, fillColor:color(0), zIndex:2, name:'imageTitle'}); createObject('text', {text:'Crop, frame, and size live on the object.', textSize:16, x:148, y:100, width:320, height:20, fillColor:color(142,142,147), zIndex:2, name:'imageNote'});",
+        "c-parent": clearDraw("c-parent") + "createObject('rect', {x:28, y:70, width:250, height:110, radius:14, fillColor:color(0,122,255), zIndex:2, name:'parentCard'}); createObject('text', {text:'Child text', textSize:16, x:0, y:0, width:120, height:20, fillColor:color(255), zIndex:3, name:'childLabel'}); parentElement('childLabel', 'parentCard'); setPosition('childLabel', 24, 44); var nudgeElement = function(id, data) { var obj = getObject(id); var next = {}; if (!obj || !data) { return; } if (typeof data.x === 'number') { next.x = (obj.properties.x || 0) + data.x; } if (typeof data.y === 'number') { next.y = (obj.properties.y || 0) + data.y; } return modifyObject(id, next); }; demos.parent = { nudge: function() { if (elements.parentCard.properties.x > 250) { setPosition('parentCard', 28, 70); } else { nudgeElement('parentCard', {x:36, y:0}); } } };",
+        "c-z": clearDraw("c-z") + "var zRank = 4; createObject('rect', {x:28, y:50, width:150, height:100, radius:12, fillColor:color(255,59,48), zIndex:3, name:'zRed'}); createObject('rect', {x:98, y:86, width:150, height:100, radius:12, fillColor:color(76,217,100), zIndex:4, name:'zGreen'}); createObject('rect', {x:168, y:122, width:150, height:100, radius:12, fillColor:color(0,122,255), zIndex:5, name:'zBlue'}); createObject('text', {text:'Red', textSize:15, x:44, y:68, width:50, height:18, fillColor:color(255), zIndex:6, name:'zRedLabel'}); createObject('text', {text:'Green', textSize:15, x:114, y:104, width:70, height:18, fillColor:color(255), zIndex:6, name:'zGreenLabel'}); createObject('text', {text:'Blue', textSize:15, x:184, y:140, width:50, height:18, fillColor:color(255), zIndex:6, name:'zBlueLabel'}); createObject('text', {text:'Red zIndex is 4', textSize:16, x:360, y:70, width:180, height:20, fillColor:color(142,142,147), zIndex:6, name:'zNote'}); demos.z = { raise: function() { zRank += 1; setLayer('zRed', zRank); setLayer('zRedLabel', zRank + 1); modifyObject('zNote', {text:'Red zIndex is ' + zRank}); } };",
+        "c-motion": clearDraw("c-motion") + "createObject('rect', {x:28, y:120, width:520, height:8, radius:4, fillColor:color(229,229,234), zIndex:1, name:'track'}); createObject('rect', {x:28, y:100, width:48, height:48, radius:24, fillColor:color(76,217,100), zIndex:3, name:'mover'}); demos.motion = { play: function() { setPosition('mover', 28, 100); animateObject('mover', {x:500}, 800, 'easeInOutCubic', {yoyo:true, repeat:1}); } };",
+        "c-style": clearDraw("c-style") + "createObject('rect', {x:28, y:48, width:250, height:120, radius:16, fillColor:color(0,122,255), zIndex:2, name:'gradBar'}); setGradient('gradBar', 'linear', color(0,122,255), color(88,86,214), 24, false); createObject('rect', {x:320, y:48, width:210, height:120, radius:16, fillColor:color(255), zIndex:2, name:'shadowCard'}); setShadow('shadowCard', {x:0, y:10, blur:16, color:color(0,0,0,36)}); createObject('text', {text:'Soft shadow', textSize:16, x:356, y:94, width:140, height:20, fillColor:color(0), zIndex:3, name:'shadowLabel'}); createObject('rect', {x:28, y:200, width:90, height:36, radius:18, fillColor:color(255,149,0), zIndex:2, name:'fadeChip'}); setOpacity('fadeChip', 0.45); createObject('text', {text:'45%', textSize:15, x:56, y:208, width:40, height:18, fillColor:color(0), zIndex:3, name:'fadeLabel'});",
+        "c-events": clearDraw("c-events") + "var switchOn = false; var copyCount = 0; createObject('rect', {x:28, y:48, width:64, height:32, radius:16, fillColor:color(229,229,234), zIndex:2, name:'switchTrack'}); createObject('rect', {x:32, y:52, width:24, height:24, radius:12, fillColor:color(255), zIndex:3, name:'switchKnob'}); createObject('text', {text:'Off', textSize:17, x:108, y:54, width:40, height:20, fillColor:color(0), zIndex:3, name:'switchLabel'}); createObject('rect', {x:28, y:120, width:110, height:36, radius:18, fillColor:color(0,122,255), zIndex:2, name:'chip'}); createObject('text', {text:'Original', textSize:15, x:50, y:128, width:80, height:18, fillColor:color(255), zIndex:3, name:'chipLabel'}); addTag('chip', 'demo'); demos.events = { toggle: function() { switchOn = !switchOn; if (switchOn) { modifyObject('switchTrack', {fillColor:color(76,217,100)}); setPosition('switchKnob', 64, 52); modifyObject('switchLabel', {text:'On'}); } else { modifyObject('switchTrack', {fillColor:color(229,229,234)}); setPosition('switchKnob', 32, 52); modifyObject('switchLabel', {text:'Off'}); } }, duplicate: function() { var copy = duplicateElement('chip'); var copyName = ''; var i; copyCount += 1; for (i = 0; i < elementNames.length; i++) { if (elements[elementNames[i]] === copy) { copyName = elementNames[i]; } } setPosition(copyName, 156 + (copyCount - 1) * 28, 120); addTag(copyName, 'demo'); } };"
+    };
+
+    function startCanvas(canvas) {
+        canvas.width = 600;
+        canvas.height = 280;
+        var example = examples[canvas.id];
+        var sketch = new Function("processingInstance", "demos", "with (processingInstance) { size(600, 280); frameRate(30);\n" + librarySource + "\n" + example + "\n}");
+        var inst = new Processing(canvas, function(processingInstance) { sketch(processingInstance, demos); });
+        canvas.style.width = "600px";
+        canvas.style.height = "280px";
+        canvas.style.background = "transparent";
+        return inst;
+    }
+
+    var nodes = document.querySelectorAll("canvas");
+    var n;
+    for (n = 0; n < nodes.length; n++) {
+        instances.push(startCanvas(nodes[n]));
+    }
+
+    var slides = document.querySelectorAll(".slide");
+    var index = 0;
+    var dots = document.getElementById("dots");
+    for (n = 0; n < slides.length; n++) {
+        var dot = document.createElement("button");
+        dot.type = "button";
+        dot.setAttribute("data-index", String(n));
+        dots.appendChild(dot);
+    }
+    function show(next) {
+        if (next < 0 || next > slides.length - 1) { return; }
+        index = next;
+        var i;
+        for (i = 0; i < slides.length; i++) {
+            slides[i].className = i === index ? "slide on" : "slide";
+            if (instances[i]) {
+                if (i === index) { instances[i].loop(); } else { instances[i].noLoop(); }
+            }
+        }
+        document.getElementById("title").textContent = slides[index].getAttribute("data-title");
+        document.getElementById("count").textContent = (index + 1) + " of " + slides.length;
+        document.getElementById("back").disabled = index === 0;
+        document.getElementById("next").disabled = index === slides.length - 1;
+        var dotNodes = dots.children;
+        for (i = 0; i < dotNodes.length; i++) {
+            dotNodes[i].className = i === index ? "on" : "";
+        }
+    }
+    document.getElementById("back").onclick = function() { show(index - 1); };
+    document.getElementById("next").onclick = function() { show(index + 1); };
+    dots.onclick = function(event) {
+        if (event.target.getAttribute("data-index")) {
+            show(Number(event.target.getAttribute("data-index")));
+        }
+    };
+    document.getElementById("nudge").onclick = function() { demos.parent.nudge(); };
+    document.getElementById("raise").onclick = function() { demos.z.raise(); };
+    document.getElementById("play").onclick = function() { demos.motion.play(); };
+    document.getElementById("toggle").onclick = function() { demos.events.toggle(); };
+    document.getElementById("duplicate").onclick = function() { demos.events.duplicate(); };
+    show(0);
+    </script>
 </body>
 </html>
