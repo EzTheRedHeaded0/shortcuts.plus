@@ -38,12 +38,17 @@
         </span>
         Shortcuts+
       </a>
+
       <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu">☰</button>
+
       <nav class="nav-links" id="nav-links">
-        <a href="#featured">Featured</a>
-        <a href="#productivity">Productivity</a>
-        <a href="#utilities">Utilities</a>
-        <a href="#wellness">Wellness</a>
+        <div class="section-picker">
+          <select id="section-select" aria-label="Browse sections">
+            <option value="all">All Sections</option>
+          </select>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 9l5 5 5-5"/></svg>
+        </div>
+
         <a href="#howto">How to add</a>
         <button class="icon-btn" id="theme-btn" aria-label="Toggle theme"></button>
       </nav>
@@ -65,7 +70,7 @@
     </section>
 
     <div class="toolbar">
-      <div class="chips" id="chips"></div>
+      <div></div>
       <div class="meta" id="count">Loading…</div>
     </div>
 
