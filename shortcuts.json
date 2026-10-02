@@ -1,57 +1,248 @@
 {
   "featured": [
     {
-      "title": "Spotify Shuffle",
-      "desc": "Shuffle your liked songs instantly.",
-      "link": "https://www.icloud.com/shortcuts/",
-      "badge": "New",
-      "icon": "music"
-    },
-    {
-      "title": "View Image",
-      "desc": "Open local or online images instantly.",
-      "link": "https://www.icloud.com/shortcuts/",
+      "title": "Share Wi-Fi via QR",
+      "desc": "Turn your Wi-Fi login into a QR code so guests can join without seeing the password.",
+      "link": "https://www.icloud.com/shortcuts/d7f3f517234c4f4e9df2169d52cab759",
       "badge": "Popular",
-      "icon": "image"
+      "icon": "scan"
     },
     {
-      "title": "Quick Notes",
-      "desc": "Capture notes in seconds.",
-      "link": "https://www.icloud.com/shortcuts/",
+      "title": "Share Your ETA",
+      "desc": "Send your estimated arrival time to a chosen contact in one tap.",
+      "link": "https://www.icloud.com/shortcuts/d43a197472be4934a262612fe440d928",
+      "badge": "New",
+      "icon": "bell"
+    },
+    {
+      "title": "Track Hydration",
+      "desc": "Log a glass of water from the Home Screen and keep a simple daily total.",
+      "link": "https://www.icloud.com/shortcuts/88ac0a6dd23341398b238d0b9463badf",
+      "badge": "Useful",
+      "icon": "spark"
+    },
+    {
+      "title": "Lock iPhone Instantly",
+      "desc": "Lock the phone with one tap, without holding the side button.",
+      "link": "https://www.icloud.com/shortcuts/1702d6a1f79442a2a13661c3f52947cd",
       "badge": "Fast",
-      "icon": "note"
+      "icon": "scan"
     }
   ],
   "productivity": [
     {
-      "title": "Today's Meetings",
-      "desc": "Review your calendar agenda quickly.",
-      "link": "https://www.icloud.com/shortcuts/",
+      "title": "Calendar Alarms",
+      "desc": "Add alarms for calendar events so a notification is harder to miss.",
+      "link": "https://www.icloud.com/shortcuts/f6e4395d19ad4ef2b099e9522b5efcb3",
       "badge": "New",
       "icon": "calendar"
     },
     {
-      "title": "Reminders Reader",
-      "desc": "Have Siri read reminders aloud.",
-      "link": "https://www.icloud.com/shortcuts/",
+      "title": "Smart To-Do List",
+      "desc": "Turn spoken tasks into an organized to-do list in Notes. Needs Apple Intelligence.",
+      "link": "https://www.icloud.com/shortcuts/d7abb2a5a4034ee9bbc135ccc75a1606",
+      "badge": "AI",
+      "icon": "note"
+    },
+    {
+      "title": "Save Recipes to Notes",
+      "desc": "Pull ingredients and steps from a recipe photo or video into Notes.",
+      "link": "https://www.icloud.com/shortcuts/27f408939331434494184c200b5f21b1",
+      "badge": "AI",
+      "icon": "note"
+    },
+    {
+      "title": "Save Recipe and Groceries",
+      "desc": "Save a recipe and add its ingredients to a grocery list.",
+      "link": "https://www.icloud.com/shortcuts/f27d649af1aa47108a2f274136de3a5a",
+      "badge": "Useful",
+      "icon": "note"
+    },
+    {
+      "title": "Summarize a Document",
+      "desc": "Make a short summary of a document on device. Needs Apple Intelligence.",
+      "link": "https://www.icloud.com/shortcuts/5d30770b12cc453c9d9465baa5354a6f",
+      "badge": "AI",
+      "icon": "spark"
+    },
+    {
+      "title": "Master Summarizer",
+      "desc": "Summarize shared text or a page into a shorter note you can keep.",
+      "link": "https://www.icloud.com/shortcuts/86c024a49229462c86cc271816759097",
+      "badge": "AI",
+      "icon": "spark"
+    },
+    {
+      "title": "Sort Apple Notes",
+      "desc": "Sort notes so a long Notes library is easier to scan.",
+      "link": "https://www.icloud.com/shortcuts/61a6e4d3c8c84f6997df6c5b475d5117",
+      "badge": "Fast",
+      "icon": "note"
+    },
+    {
+      "title": "Calendar to Spreadsheet",
+      "desc": "Export calendar events into a spreadsheet you can review or share.",
+      "link": "https://www.icloud.com/shortcuts/6aeae662cd5e40a982ec8b9bb276c744",
+      "badge": "Useful",
+      "icon": "calendar"
+    },
+    {
+      "title": "Sports Schedule",
+      "desc": "Add an upcoming sports schedule to Calendar.",
+      "link": "https://www.icloud.com/shortcuts/442d7133079049a0a4781f8d7cee8588",
+      "badge": "New",
+      "icon": "calendar"
+    },
+    {
+      "title": "Saved Places",
+      "desc": "Keep a list of places with notes, then open or share them later.",
+      "link": "https://www.icloud.com/shortcuts/28cf78bcc44747a1b2e107f42196b108",
+      "badge": "Useful",
+      "icon": "calendar"
+    },
+    {
+      "title": "Clipboard History",
+      "desc": "Save copied text with a date tag and pull back the last few clips.",
+      "link": "https://www.icloud.com/shortcuts/10d6e0b3cb32474d9aa3fb057ec7b82d",
+      "badge": "Fast",
+      "icon": "note"
+    },
+    {
+      "title": "Warranty Tracker",
+      "desc": "Store product warranty details on your iPhone so you can find them later.",
+      "link": "https://www.icloud.com/shortcuts/bc7aed8342a04afc885097aba7cd4ff6",
       "badge": "Useful",
       "icon": "bell"
     }
   ],
   "utilities": [
     {
-      "title": "Speak Photo Text",
-      "desc": "Extract and speak text from photos.",
-      "link": "https://www.icloud.com/shortcuts/",
+      "title": "Eject Water",
+      "desc": "Play a tone that helps push water out of the speaker after a splash.",
+      "link": "https://www.icloud.com/shortcuts/da2076e9f0a4407089471e22249ac3f5",
+      "badge": "Popular",
+      "icon": "spark"
+    },
+    {
+      "title": "Smarter Low Power",
+      "desc": "Turn on a stricter low-power setup when the battery is getting low.",
+      "link": "https://www.icloud.com/shortcuts/f1e38273d7e644a4882543b5d0c10ddd",
+      "badge": "Useful",
+      "icon": "scan"
+    },
+    {
+      "title": "Open App Settings",
+      "desc": "Jump straight into Settings for a chosen app from Control Center.",
+      "link": "https://www.icloud.com/shortcuts/5d69e334840d4493a32db5ab330c712b",
+      "badge": "Fast",
+      "icon": "scan"
+    },
+    {
+      "title": "Shutdown Menu",
+      "desc": "Open the power menu without holding the side button.",
+      "link": "https://www.icloud.com/shortcuts/010f9c94cd0749cea6a475ebb36de2e6",
+      "badge": "Fast",
+      "icon": "scan"
+    },
+    {
+      "title": "Frame a Screenshot",
+      "desc": "Add a device frame to a screenshot, then save or share it.",
+      "link": "https://www.icloud.com/shortcuts/037f32224a354a01b2a809c805da5ca1",
+      "badge": "Popular",
+      "icon": "image"
+    },
+    {
+      "title": "Download iCloud Photos",
+      "desc": "Download original copies of your iCloud photos onto this device.",
+      "link": "https://www.icloud.com/shortcuts/a7d9e9d6e4ba47aebe25a9764fe4561b",
+      "badge": "Useful",
+      "icon": "image"
+    },
+    {
+      "title": "Refresh a Slow Connection",
+      "desc": "Reset the network connection without stopping a download already in progress.",
+      "link": "https://www.icloud.com/shortcuts/b819d4ee1df541a08860c4cae4c04142",
+      "badge": "Fast",
+      "icon": "scan"
+    },
+    {
+      "title": "Action Button Extras",
+      "desc": "Add more Action Button choices by pairing it with the volume keys.",
+      "link": "https://www.icloud.com/shortcuts/44c14f385ea4476f920a9560907451d7",
+      "badge": "New",
+      "icon": "spark"
+    },
+    {
+      "title": "Scan to Text",
+      "desc": "Transcribe a scan so the text can be copied or saved.",
+      "link": "https://www.icloud.com/shortcuts/5cef466ce1ad4f3799bcfc366b36568d",
       "badge": "AI",
       "icon": "scan"
     },
     {
-      "title": "Quick Notes",
-      "desc": "Capture notes in seconds.",
-      "link": "https://www.icloud.com/shortcuts/",
+      "title": "Read Apple News Aloud",
+      "desc": "Have a News story read out loud.",
+      "link": "https://www.icloud.com/shortcuts/a9f9d99be8e04d23b9aa1901be60efee",
+      "badge": "Useful",
+      "icon": "bell"
+    },
+    {
+      "title": "Movie Trailers",
+      "desc": "Look up a movie trailer and open it quickly.",
+      "link": "https://www.icloud.com/shortcuts/115c8c42b8994dca8e6077cf225bc604",
+      "badge": "New",
+      "icon": "image"
+    },
+    {
+      "title": "New Movie Trailers",
+      "desc": "Browse the newest movie trailers from one shortcut.",
+      "link": "https://www.icloud.com/shortcuts/748cc685f7414d4b8e1129070a4fe50a",
+      "badge": "Popular",
+      "icon": "image"
+    }
+  ],
+  "wellness": [
+    {
+      "title": "Water Log",
+      "desc": "Add a Home Screen button that logs water and can remind you to drink.",
+      "link": "https://www.icloud.com/shortcuts/88ac0a6dd23341398b238d0b9463badf",
+      "badge": "Useful",
+      "icon": "spark"
+    },
+    {
+      "title": "2-Minute Brush Timer",
+      "desc": "Play a two-minute song so brushing teeth has a built-in timer.",
+      "link": "https://www.icloud.com/shortcuts/5104f81ee4624b1f8eda4075c80e706a",
       "badge": "Fast",
-      "icon": "note"
+      "icon": "music"
+    },
+    {
+      "title": "Low Battery Check-In",
+      "desc": "Send location and battery level by message when the phone is almost out of charge.",
+      "link": "https://www.icloud.com/shortcuts/102d64a2f1d548d3a41a048b33b896a0",
+      "badge": "Useful",
+      "icon": "bell"
+    },
+    {
+      "title": "Smarter Wake Up",
+      "desc": "Build a morning alarm around your first tasks. Needs Apple Intelligence.",
+      "link": "https://www.icloud.com/shortcuts/c2123b6de8e4426cb96554dea5135b16",
+      "badge": "AI",
+      "icon": "bell"
+    },
+    {
+      "title": "Call Reminder",
+      "desc": "Set a reminder so you do not miss a planned call.",
+      "link": "https://www.icloud.com/shortcuts/55c6fbbe0b3842a18c95838cc228a8d2",
+      "badge": "Useful",
+      "icon": "bell"
+    },
+    {
+      "title": "Watch Wallpaper",
+      "desc": "Swap the Apple Watch wallpaper on a schedule from a folder of images.",
+      "link": "https://www.icloud.com/shortcuts/2ae2f66905c24762a9ae452a92ac8624",
+      "badge": "New",
+      "icon": "image"
     }
   ]
 }
