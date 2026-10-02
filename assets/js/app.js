@@ -10,11 +10,13 @@ const ICONS={
   scan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8V5h3M20 8V5h-3M4 16v3h3M20 16v3h-3"/><path d="M7 12h10"/></svg>',
   spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.6 5.2L19 10l-5.4 1.8L12 17l-1.6-5.2L5 10l5.4-1.8z"/></svg>'
 };
-const CATEGORY_ICON={featured:"spark",productivity:"calendar",utilities:"scan",wellness:"bell"};
+const CATEGORY_ICON={featured:"spark",productivity:"calendar",utilities:"scan",wellness:"bell",uncategorized:"spark"};
 let catalog={};
-let activeCategory="all";
+let sectionOrder=[];
 let query="";
+
 const $=sel=>document.querySelector(sel);
+
 function favs(){
   try{return JSON.parse(localStorage.getItem(FAV_KEY)||"[]");}
   catch{return [];}
@@ -25,14 +27,51 @@ function toggleFav(id){
   localStorage.setItem(FAV_KEY,JSON.stringify(next));
   render();
 }
-function slug(item,category){
-  return `${category}:${(item.title||"").toLowerCase().replace(/\s+/g,"-")}`;
+function slug(value){
+  return String(value||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"uncategorized";
+}
+function sectionId(name){return "section-"+slug(name);}
+function pretty(name){
+  if(String(name).toLowerCase()==="uncategorized")return "Uncategorized";
+  return String(name).replace(/[-_]+/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+}
+function normalizeData(json){
+  const result={};
+  const order=[];
+  const add=(section,item)=>{
+    section=section||"Uncategorized";
+    const key=section==="Uncategorized"?"uncategorized":String(section);
+    if(!result[key]){result[key]=[];order.push(key);}
+    result[key].push({...item,category:key});
+  };
+  if(Array.isArray(json)){
+    json.forEach(item=>{
+      if(item&&typeof item==="object")add(item.category||"Uncategorized",item);
+    });
+  }else if(json&&typeof json==="object"){
+    Object.entries(json).forEach(([section,items])=>{
+      if(Array.isArray(items)){
+        items.forEach(item=>{
+          if(item&&typeof item==="object")add(item.category||section||"Uncategorized",item);
+        });
+      }else if(section==="shortcuts"&&items&&typeof items==="object"){
+        Object.values(items).forEach(item=>{
+          if(item&&typeof item==="object")add(item.category||"Uncategorized",item);
+        });
+      }
+    });
+  }
+  if(result.uncategorized&&order.indexOf("uncategorized")!==-1){
+    order.splice(order.indexOf("uncategorized"),1);
+    order.push("uncategorized");
+  }
+  return {catalog:result,order};
 }
 function flatten(){
   const out=[];
-  Object.entries(catalog).forEach(([category,items])=>{
-    (items||[]).forEach((item,index)=>{
-      out.push({...item,category,id:slug(item,category)+"-"+index});
+  sectionOrder.forEach(section=>{
+    (catalog[section]||[]).forEach((item,index)=>{
+      out.push({...item,category:section,id:`${slug(section)}:${slug(item.title)}-${index}`});
     });
   });
   return out;
@@ -40,9 +79,8 @@ function flatten(){
 function filtered(){
   const q=query.trim().toLowerCase();
   return flatten().filter(item=>{
-    const inCat=activeCategory==="all"||(activeCategory==="saved"&&isFav(item.id))||item.category===activeCategory;
-    const hay=`${item.title} ${item.desc} ${item.badge} ${item.category}`.toLowerCase();
-    return inCat&&(!q||hay.includes(q));
+    const hay=`${item.title||""} ${item.desc||""} ${item.badge||""} ${item.category||""}`.toLowerCase();
+    return !q||hay.includes(q);
   });
 }
 function iconFor(item){
@@ -50,74 +88,63 @@ function iconFor(item){
 }
 function cardHTML(item){
   const saved=isFav(item.id);
-  return `
-    <article class="card">
-      <div class="card-top">
-        <div class="icon-bubble">${iconFor(item)}</div>
-        <button class="fav ${saved?"on":""}" data-fav="${item.id}" aria-label="${saved?"Remove from saved":"Save shortcut"}">
-          ${saved?"★":"☆"}
-        </button>
-      </div>
-      ${item.badge?`<div class="badge">${item.badge}</div>`:`<div class="badge">${item.category}</div>`}
-      <h3>${escapeHtml(item.title||"Untitled")}</h3>
-      <p>${escapeHtml(item.desc||"")}</p>
-      <div class="btns">
-        <a class="btn primary" href="${escapeAttr(item.link||"#")}" target="_blank" rel="noopener">Get Shortcut</a>
-        <button class="btn ghost" data-copy="${escapeAttr(item.link||"")}">Copy Link</button>
-      </div>
-    </article>`;
+  return `<article class="card">
+    <div class="card-top">
+      <div class="icon-bubble">${iconFor(item)}</div>
+      <button class="fav ${saved?"on":""}" data-fav="${item.id}" aria-label="${saved?"Remove from saved":"Save shortcut"}">${saved?"★":"☆"}</button>
+    </div>
+    <div class="badge">${item.badge?escapeHtml(item.badge):escapeHtml(pretty(item.category))}</div>
+    <h3>${escapeHtml(item.title||"Untitled")}</h3>
+    <p>${escapeHtml(item.desc||"")}</p>
+    <div class="btns">
+      <a class="btn primary" href="${escapeAttr(item.link||"#")}" target="_blank" rel="noopener">Get Shortcut</a>
+      <button class="btn ghost" data-copy="${escapeAttr(item.link||"")}">Copy Link</button>
+    </div>
+  </article>`;
 }
 function escapeHtml(s){
-  return String(s)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;");
+  return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
 }
-function escapeAttr(s){
-  return escapeHtml(s).replaceAll("'","&#39;");
+function escapeAttr(s){return escapeHtml(s).replaceAll("'","&#39;");}
+function renderSectionPicker(){
+  const select=$("#section-select");
+  select.innerHTML=`<option value="all">All Sections</option>${sectionOrder.map(section=>`<option value="${sectionId(section)}">${escapeHtml(pretty(section))}</option>`).join("")}<option value="saved">Saved</option>`;
 }
-function group(items){
-  const order=Object.keys(catalog);
-  const map={};
-  items.forEach(item=>{
-    (map[item.category]||=[]).push(item);
-  });
-  return order
-    .filter(key=>map[key]?.length)
-    .map(key=>({key,items:map[key]}));
-}
-function pretty(name){
-  return name.charAt(0).toUpperCase()+name.slice(1);
-}
-function renderChips(){
-  const cats=["all",...Object.keys(catalog),"saved"];
-  $("#chips").innerHTML=cats.map(cat=>{
-    const label=cat==="all"?"All":cat==="saved"?"Saved":pretty(cat);
-    return `<button class="chip ${cat===activeCategory?"active":""}" data-cat="${cat}">${label}</button>`;
-  }).join("");
+function scrollToSection(value){
+  if(value==="saved"){
+    const savedItems=flatten().filter(item=>isFav(item.id));
+    const app=$("#app");
+    if(!savedItems.length){
+      app.innerHTML='<div class="empty">You have no saved shortcuts yet.</div>';
+    }else{
+      app.innerHTML=`<section class="shortcut-section"><div class="section-head"><h2>Saved</h2><div class="meta">${savedItems.length}</div></div><div class="grid">${savedItems.map(cardHTML).join("")}</div></section>`;
+    }
+    app.scrollIntoView({behavior:"smooth",block:"start"});
+    return;
+  }
+  render();
+  const target=value==="all"?$("#app"):document.getElementById(value);
+  if(target)target.scrollIntoView({behavior:"smooth",block:"start"});
 }
 function render(){
   const items=filtered();
   $("#count").textContent=`${items.length} shortcut${items.length===1?"":"s"}`;
-  renderChips();
   const app=$("#app");
   if(!items.length){
-    app.innerHTML=`<div class="empty">No shortcuts match that search. Try another word, or switch categories.</div>`;
+    app.innerHTML='<div class="empty">No shortcuts match that search. Try another word.</div>';
     return;
   }
-  if(activeCategory==="saved"||(activeCategory!=="all"&&catalog[activeCategory])){
-    app.innerHTML=`<div class="grid">${items.map(cardHTML).join("")}</div>`;
-  }else{
-    app.innerHTML=group(items).map(({key,items:list})=>`
-      <section id="${key}">
-        <div class="section-head">
-          <h2>${pretty(key)}</h2>
-          <div class="meta">${list.length}</div>
-        </div>
-        <div class="grid">${list.map(cardHTML).join("")}</div>
-      </section>`).join("");
-  }
+  app.innerHTML=sectionOrder.map(section=>{
+    const list=items.filter(item=>item.category===section);
+    if(!list.length)return"";
+    return `<section class="shortcut-section" id="${sectionId(section)}">
+      <div class="section-head">
+        <h2>${escapeHtml(pretty(section))}</h2>
+        <div class="meta">${list.length}</div>
+      </div>
+      <div class="grid">${list.map(cardHTML).join("")}</div>
+    </section>`;
+  }).join("");
 }
 function toast(msg){
   const el=$("#toast");
@@ -130,9 +157,7 @@ async function copyText(text){
   try{
     await navigator.clipboard.writeText(text);
     toast("Link copied");
-  }catch{
-    toast("Could not copy");
-  }
+  }catch{toast("Could not copy");}
 }
 function applyTheme(mode){
   document.body.classList.toggle("light",mode==="light");
@@ -146,20 +171,13 @@ function moon(){
   return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/></svg>';
 }
 async function loadData(){
-  const tryUrls=[DATA_URL,"/shortcuts.json"];
-  let lastError;
-  for(const url of tryUrls){
-    try{
-      const res=await fetch(url);
-      if(!res.ok)throw new Error(`HTTP ${res.status} while loading ${url}`);
-      const json=await res.json();
-      if(json&&typeof json==="object")return json;
-      throw new Error(`Invalid JSON data from ${url}`);
-    }catch(err){
-      lastError=err;
-    }
+  try{
+    const res=await fetch(DATA_URL);
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  }catch(err){
+    throw err;
   }
-  throw lastError||new Error("Could not load shortcuts");
 }
 function bind(){
   $("#search").addEventListener("input",e=>{
@@ -172,11 +190,8 @@ function bind(){
       $("#search").focus();
     }
   });
-  $("#chips").addEventListener("click",e=>{
-    const btn=e.target.closest("[data-cat]");
-    if(!btn)return;
-    activeCategory=btn.dataset.cat;
-    render();
+  $("#section-select").addEventListener("change",e=>{
+    scrollToSection(e.target.value);
   });
   $("#app").addEventListener("click",e=>{
     const favBtn=e.target.closest("[data-fav]");
@@ -190,17 +205,23 @@ function bind(){
   $("#menu-btn").addEventListener("click",()=>{
     $("#nav-links").classList.toggle("open");
   });
+  $("#nav-links").addEventListener("click",e=>{
+    if(e.target.closest("a"))$("#nav-links").classList.remove("open");
+  });
 }
 async function init(){
-  const savedTheme=localStorage.getItem(THEME_KEY);
-  applyTheme(savedTheme||"dark");
+  applyTheme(localStorage.getItem(THEME_KEY)||"dark");
   bind();
   try{
-    catalog=await loadData();
+    const data=await loadData();
+    const normalized=normalizeData(data);
+    catalog=normalized.catalog;
+    sectionOrder=normalized.order;
+    renderSectionPicker();
     render();
   }catch(err){
     console.error("Shortcut data failed to load:",err);
-    $("#app").innerHTML=`<div class="empty">Could not load the shortcut library. Check that /data/shortcuts.json exists and is deployed.</div>`;
+    $("#app").innerHTML='<div class="empty">Could not load the shortcut library. Check that /data/shortcuts.json exists and is deployed.</div>';
     $("#count").textContent="0 shortcuts";
   }
 }
