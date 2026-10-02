@@ -26,4 +26,4 @@ GitHub Pages does not read `_redirects`. The old `/library.html` file still send
 
 Add new shortcuts in `data/shortcuts.json`. Each category is a top-level key. Icons the app knows: `music`, `image`, `note`, `calendar`, `bell`, `scan`, `spark`.
 
-Paths start with `/` because the live site is the domain root (`shortcuts.plus`). Do not deploy this under a project subpath unless you change those paths.
+Paths start with `/` because the live site is the domain root (`shortcuts.plus`).
