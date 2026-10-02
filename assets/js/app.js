@@ -1,6 +1,7 @@
 const DATA_URL="/data/shortcuts.json";
 const FAV_KEY="sp-favs";
 const THEME_KEY="sp-theme";
+
 const ICONS={
 music:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V6l12-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
 image:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.4"/><path d="M21 16l-5.5-5.5L7 19"/></svg>',
@@ -10,19 +11,35 @@ bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1
 scan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8V5h3M20 8V5h-3M4 16v3h3M20 16v3h-3"/><path d="M7 12h10"/></svg>',
 spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.6 5.2L19 10l-5.4 1.8L12 17l-1.6-5.2L5 10l5.4-1.8z"/></svg>'
 };
-const CATEGORY_ICON={featured:"spark",productivity:"calendar",utilities:"scan",wellness:"bell",uncategorized:"spark"};
+
+const CATEGORY_ICON={
+featured:"spark",
+productivity:"calendar",
+utilities:"scan",
+wellness:"bell",
+uncategorized:"spark"
+};
+
 let catalog={};
 let sectionOrder=[];
 let query="";
 let pickerValue="all";
-const $=function(sel){return document.querySelector(sel);};
+
+const $=function(sel){
+return document.querySelector(sel);
+};
 
 function favs(){
-try{return JSON.parse(localStorage.getItem(FAV_KEY)||"[]");}
-catch(e){return[];}
+try{
+return JSON.parse(localStorage.getItem(FAV_KEY)||"[]");
+}catch(e){
+return[];
+}
 }
 
-function isFav(id){return favs().includes(id);}
+function isFav(id){
+return favs().includes(id);
+}
 
 function toggleFav(id){
 const current=favs();
@@ -35,7 +52,9 @@ function slug(value){
 return String(value||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"uncategorized";
 }
 
-function sectionId(name){return"section-"+slug(name);}
+function sectionId(name){
+return"section-"+slug(name);
+}
 
 function pretty(name){
 const value=String(name||"").replace(/[-_]+/g," ").trim();
@@ -46,6 +65,7 @@ return value.replace(/\b\w/g,function(c){return c.toUpperCase();});
 function normalizeData(data){
 const result={};
 const order=[];
+
 function add(section,item){
 let key=section||"Uncategorized";
 if(String(key).toLowerCase()==="uncategorized")key="uncategorized";
@@ -53,8 +73,12 @@ if(!result[key]){
 result[key]=[];
 order.push(key);
 }
-result[key].push({...item,category:key});
+result[key].push({
+...item,
+category:key
+});
 }
+
 if(Array.isArray(data)){
 data.forEach(function(item){
 if(item&&typeof item==="object")add(item.category,item);
@@ -70,6 +94,7 @@ if(item&&typeof item==="object")add(item.category||section,item);
 }
 });
 }
+
 if(result.uncategorized){
 const index=order.indexOf("uncategorized");
 if(index!==-1){
@@ -77,14 +102,22 @@ order.splice(index,1);
 order.push("uncategorized");
 }
 }
-return{catalog:result,order:order};
+
+return{
+catalog:result,
+order:order
+};
 }
 
 function flatten(){
 const out=[];
 sectionOrder.forEach(function(section){
 (catalog[section]||[]).forEach(function(item,index){
-out.push({...item,category:section,id:`${slug(section)}:${slug(item.title)}-${index}`});
+out.push({
+...item,
+category:section,
+id:`${slug(section)}:${slug(item.title)}-${index}`
+});
 });
 });
 return out;
@@ -130,17 +163,20 @@ return`<article class="card">
 function renderPicker(){
 const menu=$("#section-picker-menu");
 if(!menu)return;
-menu.innerHTML=
-`<button class="section-option active" type="button" role="option" data-section="all">All Sections</button>`+
-sectionOrder.map(function(section){
-return`<button class="section-option" type="button" role="option" data-section="${escapeAttr(sectionId(section))}">${escapeHtml(pretty(section))}</button>`;
-}).join("")+
-`<button class="section-option" type="button" role="option" data-section="saved">Saved</button>`;
+
+let html='<button class="section-option active" type="button" role="option" data-section="all">All Sections</button>';
+
+sectionOrder.forEach(function(section){
+html+=`<button class="section-option" type="button" role="option" data-section="${escapeAttr(sectionId(section))}">${escapeHtml(pretty(section))}</button>`;
+});
+
+html+='<button class="section-option" type="button" role="option" data-section="saved">Saved</button>';
+menu.innerHTML=html;
 }
 
 function setPickerLabel(text){
-const el=$("#section-picker-label");
-if(el)el.textContent=text;
+const label=$("#section-picker-label");
+if(label)label.textContent=text;
 }
 
 function closePicker(){
@@ -157,43 +193,77 @@ if(picker)picker.classList.add("open");
 if(button)button.setAttribute("aria-expanded","true");
 }
 
-function selectSection(value,label){
-pickerValue=value;
-setPickerLabel(label);
+function updatePickerActive(value){
 document.querySelectorAll(".section-option").forEach(function(option){
 option.classList.toggle("active",option.dataset.section===value);
 });
-closePicker();
+}
 
-if(value==="saved"){
-const savedItems=flatten().filter(function(item){return isFav(item.id);});
+function showSaved(){
+const savedItems=flatten().filter(function(item){
+return isFav(item.id);
+});
+
 const app=$("#app");
 if(!app)return;
+
 if(!savedItems.length){
 app.innerHTML='<div class="empty">You have no saved shortcuts yet.</div>';
 }else{
-app.innerHTML=`<section class="shortcut-section" id="section-saved"><div class="section-head"><h2>Saved</h2><div class="meta">${savedItems.length}</div></div><div class="grid">${savedItems.map(cardHTML).join("")}</div></section>`;
+app.innerHTML=`<section class="shortcut-section" id="section-saved">
+<div class="section-head">
+<h2>Saved</h2>
+<div class="meta">${savedItems.length}</div>
+</div>
+<div class="grid">${savedItems.map(cardHTML).join("")}</div>
+</section>`;
 }
-app.scrollIntoView({behavior:"smooth",block:"start"});
+
+app.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+}
+
+function selectSection(value,label){
+pickerValue=value;
+setPickerLabel(label);
+updatePickerActive(value);
+closePicker();
+
+if(value==="saved"){
+showSaved();
 return;
 }
 
 render();
 
 if(value==="all"){
-window.scrollTo({top:0,behavior:"smooth"});
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
 return;
 }
 
 const target=document.getElementById(value);
-if(target)target.scrollIntoView({behavior:"smooth",block:"start"});
+if(target){
+target.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+}
 }
 
 function render(){
 const items=filtered();
 const count=$("#count");
 const app=$("#app");
-if(count)count.textContent=`${items.length} shortcut${items.length===1?"":"s"}`;
+
+if(count){
+count.textContent=`${items.length} shortcut${items.length===1?"":"s"}`;
+}
+
 if(!app)return;
 
 if(!items.length){
@@ -202,8 +272,12 @@ return;
 }
 
 app.innerHTML=sectionOrder.map(function(section){
-const list=items.filter(function(item){return item.category===section;});
+const list=items.filter(function(item){
+return item.category===section;
+});
+
 if(!list.length)return"";
+
 return`<section class="shortcut-section" id="${escapeAttr(sectionId(section))}">
 <div class="section-head">
 <h2>${escapeHtml(pretty(section))}</h2>
@@ -220,7 +294,9 @@ if(!el)return;
 el.textContent=msg;
 el.classList.add("show");
 clearTimeout(toast.timer);
-toast.timer=setTimeout(function(){el.classList.remove("show");},1800);
+toast.timer=setTimeout(function(){
+el.classList.remove("show");
+},1800);
 }
 
 function copyText(text){
@@ -228,6 +304,7 @@ if(!navigator.clipboard){
 toast("Copy is not available");
 return;
 }
+
 navigator.clipboard.writeText(text).then(function(){
 toast("Link copied");
 }).catch(function(){
@@ -246,6 +323,7 @@ return'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="curre
 function applyTheme(mode){
 document.body.classList.toggle("light",mode==="light");
 localStorage.setItem(THEME_KEY,mode);
+
 const button=$("#theme-btn");
 if(button)button.innerHTML=mode==="light"?moon():sun();
 }
@@ -253,13 +331,19 @@ if(button)button.innerHTML=mode==="light"?moon():sun();
 async function loadData(){
 const response=await fetch(DATA_URL,{cache:"no-store"});
 if(!response.ok)throw new Error(`HTTP ${response.status}`);
+
 const data=await response.json();
-if(!data||typeof data!=="object")throw new Error("Invalid shortcut JSON");
+
+if(!data||typeof data!=="object"){
+throw new Error("Invalid shortcut JSON");
+}
+
 return data;
 }
 
 function bind(){
 const search=$("#search");
+
 if(search){
 search.addEventListener("input",function(e){
 query=e.target.value;
@@ -275,49 +359,70 @@ if(search)search.focus();
 });
 
 const pickerButton=$("#section-picker-button");
+
 if(pickerButton){
 pickerButton.addEventListener("click",function(e){
 e.stopPropagation();
+
 const picker=$("#section-picker");
-picker&&picker.classList.contains("open")?closePicker():openPicker();
+
+if(picker&&picker.classList.contains("open")){
+closePicker();
+}else{
+openPicker();
+}
 });
 }
 
 const pickerMenu=$("#section-picker-menu");
+
 if(pickerMenu){
 pickerMenu.addEventListener("click",function(e){
 const option=e.target.closest(".section-option");
 if(!option)return;
-selectSection(option.dataset.section,option.textContent);
+
+selectSection(
+option.dataset.section,
+option.textContent
+);
 });
 }
 
 document.addEventListener("click",function(e){
-if(!e.target.closest("#section-picker"))closePicker();
+if(!e.target.closest("#section-picker")){
+closePicker();
+}
 });
 
 const app=$("#app");
+
 if(app){
 app.addEventListener("click",function(e){
 const fav=e.target.closest("[data-fav]");
 if(fav)toggleFav(fav.dataset.fav);
+
 const copy=e.target.closest("[data-copy]");
 if(copy)copyText(copy.dataset.copy);
 });
 }
 
 const themeButton=$("#theme-btn");
+
 if(themeButton){
 themeButton.addEventListener("click",function(){
-applyTheme(document.body.classList.contains("light")?"dark":"light");
+applyTheme(
+document.body.classList.contains("light")?"dark":"light"
+);
 });
 }
 
 const menuButton=$("#menu-btn");
+
 if(menuButton){
 menuButton.addEventListener("click",function(){
 const nav=$("#nav-links");
 if(!nav)return;
+
 const open=nav.classList.toggle("open");
 menuButton.setAttribute("aria-expanded",open?"true":"false");
 });
@@ -331,16 +436,25 @@ bind();
 try{
 const raw=await loadData();
 const normalized=normalizeData(raw);
+
 catalog=normalized.catalog;
 sectionOrder=normalized.order;
+
 renderPicker();
 render();
 }catch(error){
 console.error("Shortcut data failed to load:",error);
+
 const app=$("#app");
 const count=$("#count");
-if(app)app.innerHTML='<div class="empty">Could not load the shortcut library. Please refresh the page.</div>';
-if(count)count.textContent="0 shortcuts";
+
+if(app){
+app.innerHTML='<div class="empty">Could not load the shortcut library. Please refresh the page.</div>';
+}
+
+if(count){
+count.textContent="0 shortcuts";
+}
 }
 }
 
