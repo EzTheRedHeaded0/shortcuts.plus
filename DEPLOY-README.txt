@@ -1,18 +1,36 @@
 SHORTCUTS+ STATIC SITE
 
-This archive is organized for a normal static deployment.
+Canonical site structure:
 
-Upload the CONTENTS of this folder as the site root. The main page is:
-  /index.html
+/index.html
+/404.html
+/library.html
+/assets/css/styles.css
+/assets/js/app.js
+/assets/icons/favicon.svg
+/data/shortcuts.json
+/CNAME
+/_headers
+/_redirects
 
-Required runtime files at the same level as index.html:
-  app.js
-  styles.css
-  shortcuts.json
-  favicon.svg
+The main page loads:
+  /assets/css/styles.css
+  /assets/js/app.js
+  /data/shortcuts.json
+  /assets/icons/favicon.svg
 
-Do not use the old top-level bootstrap index.html from the original archive.
-Do not deploy the old src/worker.js unless you specifically want the Cloudflare Worker version.
+Do not keep duplicate runtime files at the repository root.
 
-IMPORTANT:
-A File Garden URL that points to a ZIP is served as a ZIP file. A browser cannot treat that ZIP URL itself as index.html. To have an HTML URL, upload/deploy index.html (and its assets) as files rather than linking directly to the ZIP object.
+Delete these stale files:
+  /styles.css
+  /shortcuts.json
+  /favicon.svg
+
+Shortcut metadata belongs in:
+  /data/shortcuts.json
+
+The deployment host should publish the repository root as the site root.
+
+If using a host that supports _headers and _redirects, leave those files in place.
+
+Shortcuts+ is an independent website and is not affiliated with Apple.
