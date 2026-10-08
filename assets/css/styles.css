@@ -34,3 +34,14 @@ body{overflow-x:hidden}
 
 .date-added{margin-top:9px;color:var(--faint);font-size:11px}.home-main .toolbar{border-top:0;padding-top:0;justify-content:flex-end}
 @media (max-width:850px){.nav-shell{top:8px}.home-main{padding-top:92px}.hero{padding-top:35px;min-height:380px}}
+
+
+/* Original Shortcuts+ mark: iOS-style app geometry without using Apple branding. */
+.logo-mark{position:relative;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;overflow:visible;background:linear-gradient(145deg,#8be5ff 0%,#4d83ff 50%,#7257e8 100%);color:#fff;box-shadow:0 9px 25px rgba(72,128,255,.34),inset 0 1px 1px rgba(255,255,255,.38)}
+.logo-mark>svg{display:none}
+.logo-mark:before,.logo-mark:after{content:"";position:absolute;width:20px;height:12px;border-radius:5px;filter:drop-shadow(0 2px 2px rgba(20,35,90,.25));pointer-events:none}
+.logo-mark:before{left:7px;top:9px;background:linear-gradient(135deg,#fff 0%,#dff8ff 24%,#918dff 65%,#6258ec 100%);transform:rotate(-29deg) skewX(-8deg)}
+.logo-mark:after{left:9px;top:16px;background:linear-gradient(135deg,#6cf0c7 0%,#69c7ff 30%,#6f79ff 72%,#b65fff 100%);transform:rotate(29deg) skewX(8deg)}
+.logo-badge{position:absolute;z-index:4;right:-5px;top:-6px;width:16px;height:16px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#c9f5ff 45%,#4f8dff);color:#315ec7;font-size:12px;font-weight:850;line-height:1;box-shadow:0 3px 10px rgba(47,100,215,.38);border:1px solid rgba(255,255,255,.72)}
+.logo-mark:hover{box-shadow:0 11px 29px rgba(72,128,255,.45),inset 0 1px 1px rgba(255,255,255,.42)}
+.logo-mark + span{letter-spacing:-.04em}
