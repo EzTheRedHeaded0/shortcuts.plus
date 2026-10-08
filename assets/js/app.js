@@ -32,7 +32,28 @@ function setPickerLabel(text){const label=$("#section-picker-label");if(label)la
 function closePicker(){const picker=$("#section-picker");const button=$("#section-picker-button");if(picker)picker.classList.remove("open");if(button)button.setAttribute("aria-expanded","false")}
 function openPicker(){const picker=$("#section-picker");const button=$("#section-picker-button");if(picker)picker.classList.add("open");if(button)button.setAttribute("aria-expanded","true")}
 function updatePickerActive(value){document.querySelectorAll(".section-option").forEach(function(option){option.classList.toggle("active",option.dataset.section===value)})}
-function selectSection(value,label){pickerValue=value;setPickerLabel(label);updatePickerActive(value);closePicker();const nav=$("#nav-links");const menu=$("#menu-btn");if(nav&&window.matchMedia("(max-width:850px)").matches){nav.classList.remove("open");if(menu)menu.setAttribute("aria-expanded","false")}render();if(value==="all"){window.scrollTo({top:0,behavior:"smooth"});return}if(value!=="saved"){window.scrollTo({top:0,behavior:"smooth"});}}
+function selectSection(value,label){
+pickerValue=value;
+setPickerLabel(label);
+updatePickerActive(value);
+closePicker();
+const nav=$("#nav-links");
+const menu=$("#menu-btn");
+if(nav&&window.matchMedia("(max-width:850px)").matches){
+nav.classList.remove("open");
+if(menu){
+menu.setAttribute("aria-expanded","false");
+menu.setAttribute("aria-label","Open menu");
+}
+}
+render();
+if(value==="all"){
+window.scrollTo({top:0,behavior:"smooth"});
+return;
+}
+const target=document.getElementById(value==="saved"?"section-saved":sectionId(value));
+if(target)target.scrollIntoView({behavior:"smooth",block:"start"});
+}
 function render(){const items=filtered();const count=$("#count");const app=$("#app");if(count)count.textContent=`${items.length} shortcut${items.length===1?"":"s"}`;if(!app)return;if(!items.length){app.innerHTML='<div class="empty">No shortcuts match that search. Try another word.</div>';return}if(pickerValue==="saved"){app.innerHTML=`<section class="shortcut-section" id="section-saved"><div class="section-head"><h2>Saved</h2><div class="meta">${items.length}</div></div><div class="grid">${items.map(cardHTML).join("")}</div></section>`}else{app.innerHTML=sectionOrder.map(function(section){const list=items.filter(function(item){return item.category===section});if(!list.length)return"";return`<section class="shortcut-section" id="${escapeAttr(sectionId(section))}"><div class="section-head"><h2>${escapeHtml(pretty(section))}</h2><div class="meta">${list.length}</div></div><div class="grid">${list.map(cardHTML).join("")}</div></section>`}).join("")}bindCardMotion()}
 function toast(msg){const el=$("#toast");if(!el)return;el.textContent=msg;el.classList.add("show");clearTimeout(toast.timer);toast.timer=setTimeout(function(){el.classList.remove("show")},1900)}
 function copyText(text){if(!text){toast("No link available");return}if(!navigator.clipboard){toast("Copy is not available");return}navigator.clipboard.writeText(text).then(function(){toast("Link copied")}).catch(function(){toast("Could not copy")})}
