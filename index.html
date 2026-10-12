@@ -3,146 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Shortcuts+ — Custom Apple Shortcuts</title>
-<meta name="description" content="Discover useful custom Apple Shortcuts for productivity, utilities, wellness, and more.">
+<title>Shortcuts+ — Discover useful shortcuts</title>
+<meta name="description" content="Discover useful community-made Apple Shortcuts for productivity, utilities, wellness, and everyday tasks.">
 <meta name="keywords" content="Apple Shortcuts,iPhone shortcuts,custom shortcuts,Siri Shortcuts,iOS automation,Shortcuts+">
 <meta name="author" content="Ezrah M. D. Kelly">
-<meta name="robots" content="index,follow">
-<meta name="theme-color" content="#080b12">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#ffffff">
 <link rel="canonical" href="https://shortcuts.plus/">
 <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://shortcuts.plus/">
 <meta property="og:site_name" content="Shortcuts+">
-<meta property="og:title" content="Shortcuts+ — Custom Apple Shortcuts">
-<meta property="og:description" content="Discover useful custom Apple Shortcuts for productivity, utilities, wellness, and more.">
+<meta property="og:title" content="Shortcuts+ — Discover useful shortcuts">
+<meta property="og:description" content="Discover useful community-made Apple Shortcuts for productivity, utilities, wellness, and everyday tasks.">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Shortcuts+ — Custom Apple Shortcuts">
-<meta name="twitter:description" content="Discover useful custom Apple Shortcuts for productivity, utilities, wellness, and more.">
-<meta name="color-scheme" content="dark light">
+<meta name="twitter:title" content="Shortcuts+ — Discover useful shortcuts">
+<meta name="twitter:description" content="Discover useful community-made Apple Shortcuts for everyday tasks.">
+<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="/assets/css/styles.css">
+<script src="/assets/js/app.js" defer></script>
 </head>
-<body>
-<canvas id="webgl-bg" aria-hidden="true"></canvas>
-<div class="page-noise" aria-hidden="true"></div>
-<div class="page-vignette" aria-hidden="true"></div>
-
+<body class="light">
 <header class="nav-shell">
 <div class="wrap nav">
-<a class="logo" href="/" aria-label="Shortcuts+ home">
-<span class="logo-mark" aria-hidden="true"><span class="logo-badge">+</span></span>
-<span class="logo-word">Shortcuts<span class="logo-plus">+</span></span>
-</a>
-<button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false">
-<span class="menu-lines" aria-hidden="true"></span>
-</button>
+<a class="logo" href="/" aria-label="Shortcuts+ home">Shortcuts<span class="logo-plus">+</span></a>
+<button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false"><span class="menu-lines" aria-hidden="true"></span></button>
 <nav class="nav-links" id="nav-links" aria-label="Main navigation">
 <div class="section-picker" id="section-picker">
-<button class="section-picker-button" id="section-picker-button" type="button" aria-haspopup="listbox" aria-expanded="false">
-<span class="section-picker-dot" aria-hidden="true"></span>
-<span id="section-picker-label">Sections</span>
-<span class="section-picker-chevron" aria-hidden="true"></span>
-</button>
-<div class="section-picker-menu" id="section-picker-menu" role="listbox" aria-label="Sections"></div>
+<button class="section-picker-button" id="section-picker-button" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="section-picker-label">Browse sections</span><span class="section-picker-chevron" aria-hidden="true"></span></button>
+<div class="section-picker-menu" id="section-picker-menu" role="listbox" aria-label="Shortcut sections"></div>
 </div>
-<a href="#howto">How to add</a>
-<button class="icon-btn" id="theme-btn" type="button" aria-label="Toggle theme"></button>
+<a href="#howto" class="nav-link">How it works</a>
+<button class="icon-btn theme-btn" id="theme-btn" type="button" aria-label="Switch to dark mode" title="Dark mode"></button>
 </nav>
 </div>
 </header>
-
-<main class="wrap home-main">
-<section class="hero">
-<div class="hero-glow hero-glow-a" aria-hidden="true"></div>
-<div class="hero-glow hero-glow-b" aria-hidden="true"></div>
+<main>
+<section class="hero wrap" aria-labelledby="hero-title">
 <div class="hero-copy">
-<div class="kicker"><span class="kicker-dot" aria-hidden="true"></span>Independent Shortcut library</div>
-<h1>Shortcuts<span>+</span></h1>
-<p class="hero-lede">Useful automations for your Apple devices, organized in one clean, searchable library.</p>
-<div class="search-row">
-<label class="search">
-<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3-3"></path></svg>
-<input id="search" type="search" placeholder="Search shortcuts..." autocomplete="off" spellcheck="false">
-<span class="kbd">/</span>
+<p class="eyebrow">AN INDEPENDENT SHORTCUT LIBRARY</p>
+<h1 id="hero-title">A little shortcut.<br><span>A lot more done.</span></h1>
+<p class="hero-description">Discover useful shortcuts for the little things you do every day. Find one, add it, and make your iPhone work a little smarter.</p>
+<div class="hero-actions">
+<a class="button button-blue" href="#library">Explore shortcuts <span aria-hidden="true">↗</span></a>
+<a class="text-link" href="#howto">See how it works <span aria-hidden="true">›</span></a>
+</div>
+<label class="search" aria-label="Search shortcuts">
+<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<input id="search" type="search" placeholder="Search shortcuts" autocomplete="off" spellcheck="false" aria-label="Search shortcuts">
+<span class="kbd" aria-hidden="true">/</span>
 </label>
-</div>
-<div class="hero-meta">
-<span><span class="status-dot" aria-hidden="true"></span>Free to browse</span>
-<span class="hero-divider" aria-hidden="true"></span>
-<span>No account required</span>
-</div>
+<p class="hero-footnote">Free to browse. No account required.</p>
 </div>
 </section>
-
-<section class="library-intro">
-<div>
-<div class="eyebrow">THE LIBRARY</div>
-<h2>Find the right shortcut.</h2>
-<p>Browse by category or search by name, purpose, or description.</p>
+<section class="library-wrap" id="library">
+<div class="wrap library-inner">
+<div class="library-heading">
+<div><p class="eyebrow">THE COLLECTION</p><h2>Find your next favorite.</h2><p>Tools for work, creativity, and everyday life.</p></div>
+<div class="library-count"><span id="count">Loading…</span><span>in the library</span></div>
 </div>
-<div class="library-stat">
-<span id="count">Loading…</span>
-<span>available</span>
+<div class="toolbar"><span class="toolbar-title">Explore shortcuts</span><span class="toolbar-note">Choose a section from the menu above.</span></div>
+<div id="app"><div class="empty"><strong>Loading shortcuts…</strong><span>Your collection is on its way.</span></div></div>
 </div>
 </section>
-
-<div class="toolbar">
-<div class="toolbar-label"><span class="toolbar-line" aria-hidden="true"></span><span>Browse</span></div>
-<div class="toolbar-note">Tap a category above to jump directly to it.</div>
-</div>
-
-<div id="app">
-<div class="empty">
-<div class="empty-icon" aria-hidden="true">+</div>
-<strong>Loading shortcuts</strong>
-<span>Your library is being prepared.</span>
-</div>
-</div>
-
-<section class="howto" id="howto">
-<div class="howto-heading">
-<div>
-<div class="eyebrow">GET STARTED</div>
-<h2>Add a shortcut in a few taps.</h2>
-<p>Open a shortcut, review what it does, and add it to Apple's Shortcuts app.</p>
-</div>
-<div class="howto-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-<path d="M12 3v12M7 10l5 5 5-5"></path>
-<path d="M5 20h14"></path>
-</svg>
-</div>
-</div>
+<section class="howto wrap" id="howto">
+<div class="howto-heading"><div><p class="eyebrow">GET STARTED</p><h2>From discovery to done.</h2><p>Adding a shortcut takes just a few steps. Always review what a shortcut does before running it.</p></div></div>
 <div class="steps">
-<div class="step">
-<span class="step-number">01</span>
-<div><b>Choose a shortcut</b><span>Open any shortcut from the library to view its iCloud page.</span></div>
-</div>
-<div class="step">
-<span class="step-number">02</span>
-<div><b>Review it</b><span>Check the actions and permissions before adding it.</span></div>
-</div>
-<div class="step">
-<span class="step-number">03</span>
-<div><b>Add and run</b><span>Add it to Shortcuts, then use it from the app, Siri, or your Home Screen.</span></div>
-</div>
+<article class="step"><span class="step-number">01</span><div><h3>Choose a shortcut</h3><p>Browse the collection or search for something you need.</p></div></article>
+<article class="step"><span class="step-number">02</span><div><h3>Review the actions</h3><p>Open its iCloud page and check the actions and permissions.</p></div></article>
+<article class="step"><span class="step-number">03</span><div><h3>Add it to Shortcuts</h3><p>Follow Apple's prompts, then run it from Shortcuts, Siri, or your Home Screen.</p></div></article>
 </div>
 </section>
 </main>
-
-<footer class="site-footer wrap">
-<div class="footer-top">
-<div class="footer-brand">
-<span class="footer-mark" aria-hidden="true">+</span>
-<div><strong>Shortcuts+</strong><span>Custom Apple Shortcuts gallery</span></div>
+<footer class="site-footer">
+<div class="wrap footer-inner">
+<div class="footer-top"><a class="footer-brand" href="/">Shortcuts<span>+</span></a><span class="footer-year">© 2026</span></div>
+<p class="footer-copy">© 2026 Ezrah M. D. Kelly. The Shortcuts+ website design, code, and original site content are protected by their respective rights holders unless otherwise stated. This notice does not claim ownership of individual Shortcuts unless expressly stated on an entry.</p>
+<p class="footer-disclaimer">Shortcuts+ is an independent website and is not affiliated with, endorsed by, or sponsored by Apple Inc. Apple, Shortcuts, iPhone, and related names and trademarks belong to their respective owners.</p>
 </div>
-<div class="footer-year">2026</div>
-</div>
-<div class="footer-copy">© 2026 Ezrah M. D. Kelly. The Shortcuts+ website design, code, and original site content are © 2026 Ezrah M. D. Kelly unless explicitly stated otherwise. This notice does not claim ownership of individual Shortcuts unless expressly stated on their respective entries.</div>
-<div class="footer-disclaimer">Shortcuts+ is an independent website and is not affiliated with, endorsed by, or sponsored by Apple Inc. Apple, Shortcuts, iPhone, and related names and trademarks belong to their respective owners.</div>
 </footer>
-
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="/assets/js/app.js" defer></script>
 </body>
 </html>
