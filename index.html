@@ -11,7 +11,8 @@
 <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://shortcuts.plus/">
-<link rel="icon" href="/assets/icons/favicon.svg?v=4" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Shortcuts+">
@@ -26,12 +27,26 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://shortcuts.plus/#organization",
+      "name": "Shortcuts+",
+      "url": "https://shortcuts.plus/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://shortcuts.plus/favicon.png",
+        "contentUrl": "https://shortcuts.plus/favicon.png",
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
       "@type": "WebSite",
       "@id": "https://shortcuts.plus/#website",
       "url": "https://shortcuts.plus/",
       "name": "Shortcuts+",
       "description": "An independent library of useful Apple Shortcuts, automations, creative tools, and everyday utilities.",
-      "inLanguage": "en-US"
+      "inLanguage": "en-US",
+      "publisher": {"@id": "https://shortcuts.plus/#organization"}
     },
     {
       "@type": "WebPage",
